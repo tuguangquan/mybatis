@@ -24,6 +24,10 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+/**
+ * foreach SQL节点
+ *TODO
+ */
 public class ForEachSqlNode implements SqlNode {
   public static final String ITEM_PREFIX = "__frch_";
 
@@ -52,11 +56,13 @@ public class ForEachSqlNode implements SqlNode {
   @Override
   public boolean apply(DynamicContext context) {
     Map<String, Object> bindings = context.getBindings();
+	//解析collectionExpression->iterable,核心用的ognl
     final Iterable<?> iterable = evaluator.evaluateIterable(collectionExpression, bindings);
     if (!iterable.iterator().hasNext()) {
       return true;
     }
     boolean first = true;
+	//加上(
     applyOpen(context);
     int i = 0;
     for (Object o : iterable) {
@@ -76,7 +82,9 @@ public class ForEachSqlNode implements SqlNode {
         applyIndex(context, mapEntry.getKey(), uniqueNumber);
         applyItem(context, mapEntry.getValue(), uniqueNumber);
       } else {
+		//索引
         applyIndex(context, i, uniqueNumber);
+		//加上一个元素
         applyItem(context, o, uniqueNumber);
       }
       contents.apply(new FilteredDynamicContext(configuration, context, index, item, uniqueNumber));
@@ -86,6 +94,7 @@ public class ForEachSqlNode implements SqlNode {
       context = oldContext;
       i++;
     }
+	//加上)
     applyClose(context);
     return true;
   }
@@ -120,6 +129,7 @@ public class ForEachSqlNode implements SqlNode {
     return new StringBuilder(ITEM_PREFIX).append(item).append("_").append(i).toString();
   }
 
+  //被过滤的动态上下文
   private static class FilteredDynamicContext extends DynamicContext {
     private DynamicContext delegate;
     private int index;
@@ -173,6 +183,7 @@ public class ForEachSqlNode implements SqlNode {
   }
 
 
+  //前缀上下文
   private class PrefixedContext extends DynamicContext {
     private DynamicContext delegate;
     private String prefix;

@@ -25,14 +25,20 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+/**
+ * Collection包装器
+ * 
+ */
 public class CollectionWrapper implements ObjectWrapper {
 
+    //原来的对象
   private Collection<Object> object;
 
   public CollectionWrapper(MetaObject metaObject, Collection<Object> object) {
     this.object = object;
   }
 
+  //get,set都是不允许的,只能添加元素
   @Override
   public Object get(PropertyTokenizer prop) {
     throw new UnsupportedOperationException();

@@ -16,5 +16,6 @@
 
 /**
  * Default XML MyBatis language.
+ * 这个包其实就是早期mybatis（3.1）的org.apache.ibatis.builder.xml.dynamic包
  */
 package org.apache.ibatis.scripting.xmltags;

@@ -32,6 +32,9 @@ import org.apache.ibatis.session.Configuration;
  * @since 3.2.0
  * @author Eduardo Macarron
  */
+/**
+ * 原始SQL源码，比DynamicSqlSource快
+ */
 public class RawSqlSource implements SqlSource {
 
   private final SqlSource sqlSource;

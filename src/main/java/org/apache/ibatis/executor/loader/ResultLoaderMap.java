@@ -44,10 +44,16 @@ import org.apache.ibatis.session.RowBounds;
  * @author Clinton Begin
  * @author Franta Mejta
  */
+/**
+ * 结果延迟加载器映射
+ * 
+ */
 public class ResultLoaderMap {
 
+  //加载对的hashmap
   private final Map<String, LoadPair> loaderMap = new HashMap<String, LoadPair>();
 
+  //把要延迟加载的属性记到ResultLoaderMap里（一个哈希表）
   public void addLoader(String property, MetaObject metaResultObject, ResultLoader resultLoader) {
     String upperFirst = getUppercaseFirstProperty(property);
     if (!upperFirst.equalsIgnoreCase(property) && loaderMap.containsKey(upperFirst)) {
@@ -55,6 +61,11 @@ public class ResultLoaderMap {
               "' for query id '" + resultLoader.mappedStatement.getId() +
               " already exists in the result map. The leftmost property of all lazy loaded properties must be unique within a result map.");
     }
+    //key是property，这样当客户端调用getter来取真实值时，会判断这个属性是否是延迟加载属性，是才去加载
+    //可参见CglibProxyFactory的代码
+//    if (lazyLoader.hasLoader(property)) {
+//        lazyLoader.load(property);
+//    }
     loaderMap.put(upperFirst, new LoadPair(property, metaResultObject, resultLoader));
   }
 
@@ -75,8 +86,10 @@ public class ResultLoaderMap {
   }
 
   public boolean load(String property) throws SQLException {
+	//先删除key，防止第二次又去查数据库就不对了
     LoadPair pair = loaderMap.remove(property.toUpperCase(Locale.ENGLISH));
     if (pair != null) {
+      //去数据库查
       pair.load();
       return true;
     }
@@ -99,6 +112,7 @@ public class ResultLoaderMap {
   /**
    * Property which was not loaded yet.
    */
+  //静态内部类，加载对
   public static class LoadPair implements Serializable {
 
     private static final long serialVersionUID = 20130412;

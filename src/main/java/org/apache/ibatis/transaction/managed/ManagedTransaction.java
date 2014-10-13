@@ -36,6 +36,15 @@ import org.apache.ibatis.transaction.Transaction;
 /**
  * @author Clinton Begin
  */
+/**
+ * 托管事务,交给容器来管理事务
+ * MANAGED – 这个配置几乎没做什么。
+ * 它从来不提交或回滚一个连接。
+ * 而它会让 容器来管理事务的整个生命周期(比如 Spring 或 JEE 应用服务器的上下文) 
+ * 默认 情况下它会关闭连接。
+ * 然而一些容器并不希望这样, 因此如果你需要从连接中停止 它,将 closeConnection 属性设置为 false。
+ * 如果使用mybatis-spring的话，不需要配置transactionManager ,因为mybatis-spring覆盖了mybatis里的逻辑
+ */
 public class ManagedTransaction implements Transaction {
 
   private static final Log log = LogFactory.getLog(ManagedTransaction.class);
@@ -64,6 +73,7 @@ public class ManagedTransaction implements Transaction {
     return this.connection;
   }
 
+  //托管事务commit和rollback都是不做事的，交给容器管理
   @Override
   public void commit() throws SQLException {
     // Does nothing
@@ -76,6 +86,7 @@ public class ManagedTransaction implements Transaction {
 
   @Override
   public void close() throws SQLException {
+    //如果properties文件配置了closeConnection=false,则不关闭连接
     if (this.closeConnection && this.connection != null) {
       if (log.isDebugEnabled()) {
         log.debug("Closing JDBC Connection [" + this.connection + "]");

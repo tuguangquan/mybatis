@@ -20,6 +20,10 @@ import org.apache.ibatis.cache.Cache;
 /**
  * @author Clinton Begin
  */
+/**
+ * 缓存引用解析器
+ *
+ */
 public class CacheRefResolver {
   private final MapperBuilderAssistant assistant;
   private final String cacheRefNamespace;
@@ -30,6 +34,7 @@ public class CacheRefResolver {
   }
 
   public Cache resolveCacheRef() {
+      //反调MapperBuilderAssistant解析
     return assistant.useCacheRef(cacheRefNamespace);
   }
 }

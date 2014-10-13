@@ -24,6 +24,11 @@ import java.util.List;
  * @author Jeff Butler
  * @author Adam Gent
  */
+/**
+ * AbstractSQL, Statement Builder的核心,参见mybatis文档Statement Builders一章
+ * 建造者模式
+ * 可以参考SQLTest，实际上感觉这个类用处不大
+ */
 public abstract class AbstractSQL<T> {
 
   private static final String AND = ") \nAND (";
@@ -56,6 +61,7 @@ public abstract class AbstractSQL<T> {
     return getSelf();
   }
 
+  //select这个list里加入columns，可以看到下面的方法都是类似的，就是建造者模式，把属性一个个set进去
   public T SELECT(String columns) {
     sql().statementType = SQLStatement.StatementType.SELECT;
     sql().select.add(columns);
@@ -106,16 +112,19 @@ public abstract class AbstractSQL<T> {
 
   public T WHERE(String conditions) {
     sql().where.add(conditions);
+    //标记最后一个list
     sql().lastList = sql().where;
     return getSelf();
   }
 
   public T OR() {
+	//最后一个list加上OR
     sql().lastList.add(OR);
     return getSelf();
   }
 
   public T AND() {
+	//最后一个list加上AND
     sql().lastList.add(AND);
     return getSelf();
   }
@@ -127,6 +136,7 @@ public abstract class AbstractSQL<T> {
 
   public T HAVING(String conditions) {
     sql().having.add(conditions);
+    //标记最后一个list
     sql().lastList = sql().having;
     return getSelf();
   }
@@ -152,6 +162,7 @@ public abstract class AbstractSQL<T> {
     return sb.toString();
   }
 
+  //安全的Appendable
   private static class SafeAppendable {
     private final Appendable a;
     private boolean empty = true;
@@ -179,9 +190,11 @@ public abstract class AbstractSQL<T> {
 
   }
 
+  //SQL语句
   private static class SQLStatement {
 
-    public enum StatementType {
+    //4种语句类型
+	public enum StatementType {
       DELETE, INSERT, SELECT, UPDATE
     }
 
@@ -198,6 +211,7 @@ public abstract class AbstractSQL<T> {
     List<String> having = new ArrayList<String>();
     List<String> groupBy = new ArrayList<String>();
     List<String> orderBy = new ArrayList<String>();
+    //标记最后一个list
     List<String> lastList = new ArrayList<String>();
     List<String> columns = new ArrayList<String>();
     List<String> values = new ArrayList<String>();
@@ -211,6 +225,7 @@ public abstract class AbstractSQL<T> {
                            String conjunction) {
       if (!parts.isEmpty()) {
         if (!builder.isEmpty()) {
+          //如果前面有东西，另起一行
           builder.append("\n");
         }
         builder.append(keyword);
@@ -220,7 +235,7 @@ public abstract class AbstractSQL<T> {
         for (int i = 0, n = parts.size(); i < n; i++) {
           String part = parts.get(i);
           if (i > 0 && !part.equals(AND) && !part.equals(OR) && !last.equals(AND) && !last.equals(OR)) {
-            builder.append(conjunction);
+        	  builder.append(conjunction);
           }
           builder.append(part);
           last = part;
@@ -229,6 +244,7 @@ public abstract class AbstractSQL<T> {
       }
     }
 
+    //拼装select语句,可以看到都是调用sqlClause，
     private String selectSQL(SafeAppendable builder) {
       if (distinct) {
         sqlClause(builder, "SELECT DISTINCT", select, "", "", ", ");
@@ -242,6 +258,7 @@ public abstract class AbstractSQL<T> {
       sqlClause(builder, "OUTER JOIN", outerJoin, "", "", "\nOUTER JOIN ");
       sqlClause(builder, "LEFT OUTER JOIN", leftOuterJoin, "", "", "\nLEFT OUTER JOIN ");
       sqlClause(builder, "RIGHT OUTER JOIN", rightOuterJoin, "", "", "\nRIGHT OUTER JOIN ");
+      //where条件默认拼接上AND
       sqlClause(builder, "WHERE", where, "(", ")", " AND ");
       sqlClause(builder, "GROUP BY", groupBy, "", "", ", ");
       sqlClause(builder, "HAVING", having, "(", ")", " AND ");
@@ -270,6 +287,7 @@ public abstract class AbstractSQL<T> {
       return builder.toString();
     }
 
+    //拼装SQL
     public String sql(Appendable a) {
       SafeAppendable builder = new SafeAppendable(a);
       if (statementType == null) {

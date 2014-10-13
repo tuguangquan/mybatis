@@ -90,10 +90,16 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+/**
+ * 配置，里面好多配置项
+ * 
+ */
 public class Configuration {
 
+  //环境
   protected Environment environment;
 
+  //---------以下都是<settings>节点-------
   protected boolean safeRowBoundsEnabled = false;
   protected boolean safeResultHandlerEnabled = true;
   protected boolean mapUnderscoreToCamelCase = false;
@@ -101,6 +107,7 @@ public class Configuration {
   protected boolean multipleResultSetsEnabled = true;
   protected boolean useGeneratedKeys = false;
   protected boolean useColumnLabel = true;
+  //默认启用缓存
   protected boolean cacheEnabled = true;
   protected boolean callSettersOnNulls = false;
   
@@ -110,14 +117,19 @@ public class Configuration {
   protected JdbcType jdbcTypeForNull = JdbcType.OTHER;
   protected Set<String> lazyLoadTriggerMethods = new HashSet<String>(Arrays.asList(new String[] { "equals", "clone", "hashCode", "toString" }));
   protected Integer defaultStatementTimeout;
+  //默认为简单执行器
   protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
+  //---------以上都是<settings>节点-------
 
   protected Properties variables = new Properties();
+  //对象工厂和对象包装器工厂
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
+  //映射注册机
   protected MapperRegistry mapperRegistry = new MapperRegistry(this);
 
+  //默认禁用延迟加载
   protected boolean lazyLoadingEnabled = false;
   protected ProxyFactory proxyFactory = new JavassistProxyFactory(); // #224 Using internal Javassist instead of OGNL
 
@@ -131,12 +143,17 @@ public class Configuration {
   protected Class<?> configurationFactory;
 
   protected final InterceptorChain interceptorChain = new InterceptorChain();
+  //类型处理器注册机
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
+  //类型别名注册机
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
+  //映射的语句,存在Map里
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection");
+  //缓存,存在Map里
   protected final Map<String, Cache> caches = new StrictMap<Cache>("Caches collection");
+  //结果映射,存在Map里
   protected final Map<String, ResultMap> resultMaps = new StrictMap<ResultMap>("Result Maps collection");
   protected final Map<String, ParameterMap> parameterMaps = new StrictMap<ParameterMap>("Parameter Maps collection");
   protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<KeyGenerator>("Key Generators collection");
@@ -144,6 +161,7 @@ public class Configuration {
   protected final Set<String> loadedResources = new HashSet<String>();
   protected final Map<String, XNode> sqlFragments = new StrictMap<XNode>("XML fragments parsed from previous mappers");
 
+  //不完整的SQL语句
   protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<XMLStatementBuilder>();
   protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<CacheRefResolver>();
   protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<ResultMapResolver>();
@@ -162,6 +180,7 @@ public class Configuration {
   }
 
   public Configuration() {
+    //注册更多的类型别名，至于为何不直接在TypeAliasRegistry里注册，还需进一步研究
     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
     typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
 
@@ -447,25 +466,35 @@ public class Configuration {
     return languageRegistry.getDefaultDriver();
   }
 
+  //创建元对象
   public MetaObject newMetaObject(Object object) {
     return MetaObject.forObject(object, objectFactory, objectWrapperFactory);
   }
 
+  //创建参数处理器
   public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
+    //创建ParameterHandler
     ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
+    //插件在这里插入
     parameterHandler = (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
     return parameterHandler;
   }
 
+  //创建结果集处理器
   public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler,
       ResultHandler resultHandler, BoundSql boundSql) {
+    //创建DefaultResultSetHandler(稍老一点的版本3.1是创建NestedResultSetHandler或者FastResultSetHandler)
     ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
+    //插件在这里插入
     resultSetHandler = (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     return resultSetHandler;
   }
 
+  //创建语句处理器
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    //创建路由选择语句处理器
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
+    //插件在这里插入
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
     return statementHandler;
   }
@@ -474,10 +503,13 @@ public class Configuration {
     return newExecutor(transaction, defaultExecutorType);
   }
 
+  //产生执行器
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
+    //这句再做一下保护,囧,防止粗心大意的人将defaultExecutorType设成null?
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
     Executor executor;
+    //然后就是简单的3个分支，产生3种执行器BatchExecutor/ReuseExecutor/SimpleExecutor
     if (ExecutorType.BATCH == executorType) {
       executor = new BatchExecutor(this, transaction);
     } else if (ExecutorType.REUSE == executorType) {
@@ -485,9 +517,11 @@ public class Configuration {
     } else {
       executor = new SimpleExecutor(this, transaction);
     }
+    //如果要求缓存，生成另一种CachingExecutor(默认就是有缓存),装饰者模式,所以默认都是返回CachingExecutor
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
+    //此处调用插件,通过插件可以改变Executor行为
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
@@ -620,11 +654,13 @@ public class Configuration {
     return incompleteMethods;
   }
 
+  //由DefaultSqlSession.selectList调用过来
   public MappedStatement getMappedStatement(String id) {
     return this.getMappedStatement(id, true);
   }
 
   public MappedStatement getMappedStatement(String id, boolean validateIncompleteStatements) {
+    //先构建所有语句，再返回语句
     if (validateIncompleteStatements) {
       buildAllStatements();
     }
@@ -639,6 +675,7 @@ public class Configuration {
     interceptorChain.addInterceptor(interceptor);
   }
 
+  //将包下所有类加入到mapper
   public void addMappers(String packageName, Class<?> superType) {
     mapperRegistry.addMappers(packageName, superType);
   }
@@ -751,6 +788,7 @@ public class Configuration {
     }
   }
 
+  //静态内部类,严格的Map，不允许多次覆盖key所对应的value
   protected static class StrictMap<V> extends HashMap<String, V> {
 
     private static final long serialVersionUID = -4950446264854982944L;
@@ -779,24 +817,33 @@ public class Configuration {
     @SuppressWarnings("unchecked")
     public V put(String key, V value) {
       if (containsKey(key)) {
+        //如果已经存在此key了，直接报错
         throw new IllegalArgumentException(name + " already contains value for " + key);
       }
       if (key.contains(".")) {
+        //如果有.符号，取得短名称，大致用意就是包名不同，类名相同，提供模糊查询的功能
         final String shortKey = getShortName(key);
         if (super.get(shortKey) == null) {
+          //如果没有这个缩略，则放一个缩略
           super.put(shortKey, value);
         } else {
+          //如果已经有此缩略，表示模糊，放一个Ambiguity型的
           super.put(shortKey, (V) new Ambiguity(shortKey));
         }
       }
+      //再放一个全名
       return super.put(key, value);
+      //可以看到，如果有包名，会放2个key到这个map，一个缩略，一个全名
     }
 
     public V get(Object key) {
       V value = super.get(key);
+      //如果找不到相应的key，直接报错
       if (value == null) {
         throw new IllegalArgumentException(name + " does not contain value for " + key);
       }
+      //如果是模糊型的，也报错，提示用户
+      //原来这个模糊型就是为了提示用户啊
       if (value instanceof Ambiguity) {
         throw new IllegalArgumentException(((Ambiguity) value).getSubject() + " is ambiguous in " + name
             + " (try using the full name including the namespace, or rename one of the entries)");
@@ -804,12 +851,15 @@ public class Configuration {
       return value;
     }
 
+    //取得短名称，也就是取得最后那个句号的后面那部分
     private String getShortName(String key) {
       final String[] keyparts = key.split("\\.");
       return keyparts[keyparts.length - 1];
     }
 
+    //模糊，居然放在Map里面的一个静态内部类，
     protected static class Ambiguity {
+      //提供一个主题
       private String subject;
 
       public Ambiguity(String subject) {

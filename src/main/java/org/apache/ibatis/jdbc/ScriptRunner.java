@@ -28,6 +28,10 @@ import java.sql.Statement;
 /**
  * @author Clinton Begin
  */
+/**
+ * 脚本运行器,可以运行SQL脚本，如建表，插入数据，作为单元测试的前期准备
+ * 这个类其实可以被所有项目的单元测试作为工具所利用
+ */
 public class ScriptRunner {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
@@ -187,14 +191,17 @@ public class ScriptRunner {
   private StringBuilder handleLine(StringBuilder command, String line) throws SQLException, UnsupportedEncodingException {
     String trimmedLine = line.trim();
     if (lineIsComment(trimmedLine)) {
+      //处理注释
       println(trimmedLine);
     } else if (commandReadyToExecute(trimmedLine)) {
+      //如果有分号，执行
       command.append(line.substring(0, line.lastIndexOf(delimiter)));
       command.append(LINE_SEPARATOR);
       println(command);
       executeStatement(command.toString());
       command.setLength(0);
     } else if (trimmedLine.length() > 0) {
+      //没有分号，先加入，等后面的分号
       command.append(line);
       command.append(LINE_SEPARATOR);
     }
@@ -211,6 +218,7 @@ public class ScriptRunner {
   }
 
   private void executeStatement(String command) throws SQLException {
+    //就是用最简单的JDBC来执行
     boolean hasResults = false;
     Statement statement = connection.createStatement();
     statement.setEscapeProcessing(escapeProcessing);

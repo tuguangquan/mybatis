@@ -20,6 +20,9 @@ import java.util.Properties;
 /**
  * @author Clinton Begin
  */
+/**
+ * 属性解析器
+ */
 public class PropertyParser {
 
   private PropertyParser() {
@@ -32,6 +35,7 @@ public class PropertyParser {
     return parser.parse(string);
   }
 
+  //就是一个map，用相应的value替换key
   private static class VariableTokenHandler implements TokenHandler {
     private Properties variables;
 

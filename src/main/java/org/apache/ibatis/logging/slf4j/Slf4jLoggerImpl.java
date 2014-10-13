@@ -21,6 +21,10 @@ import org.slf4j.Logger;
 /**
  * @author Eduardo Macarron
  */
+/**
+ * 用的slf4j里的Logger和LoggerFactory
+ *
+ */
 class Slf4jLoggerImpl implements Log {
 
   private Logger log;

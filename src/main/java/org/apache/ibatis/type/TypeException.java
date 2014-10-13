@@ -20,6 +20,10 @@ import org.apache.ibatis.exceptions.PersistenceException;
 /**
  * @author Clinton Begin
  */
+/**
+ * 类型异常
+ *
+ */
 public class TypeException extends PersistenceException {
 
   private static final long serialVersionUID = 8614420898975117130L;

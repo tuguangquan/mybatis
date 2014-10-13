@@ -18,6 +18,10 @@ package org.apache.ibatis.builder;
 /**
  * @author Eduardo Macarron
  */
+/**
+ * 元素不全异常,比如XMLIncludeTransformer里使用
+ *
+ */
 public class IncompleteElementException extends BuilderException {
   private static final long serialVersionUID = -3697292286890900315L;
 

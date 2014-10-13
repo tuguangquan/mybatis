@@ -35,9 +35,14 @@ import org.apache.ibatis.io.Resources;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+/**
+ * 没有池化的数据源
+ */
 public class UnpooledDataSource implements DataSource {
   
   private ClassLoader driverClassLoader;
+  //作为可选项,你可以传递数据库驱动的属性。要这样做,属性的前缀是以“driver.”开 头的,例如
+  //driver.encoding=UTF8
   private Properties driverProperties;
   private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<String, Driver>();
 
@@ -198,12 +203,14 @@ public class UnpooledDataSource implements DataSource {
 
   private Connection doGetConnection(Properties properties) throws SQLException {
     initializeDriver();
+    //属性的前缀是以“driver.”开 头的,它 是 通 过 DriverManager.getConnection(url,driverProperties)方法传递给数据库驱动
     Connection connection = DriverManager.getConnection(url, properties);
     configureConnection(connection);
     return connection;
   }
 
   private synchronized void initializeDriver() throws SQLException {
+	  //这里便是大家熟悉的初学JDBC时的那几句话了 Class.forName newInstance()
     if (!registeredDrivers.containsKey(driver)) {
       Class<?> driverType;
       try {
@@ -232,6 +239,11 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  /**
+   * 驱动代理
+   * 不是很懂
+   *
+   */
   private static class DriverProxy implements Driver {
     private Driver driver;
 

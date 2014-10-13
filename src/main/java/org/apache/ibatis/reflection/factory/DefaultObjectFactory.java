@@ -33,6 +33,10 @@ import org.apache.ibatis.reflection.ReflectionException;
 /**
  * @author Clinton Begin
  */
+/**
+ * 默认对象工厂，所有对象都要由工厂来产生
+ * 
+ */
 public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
   private static final long serialVersionUID = -8855120656740914948L;
@@ -45,19 +49,25 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
   @SuppressWarnings("unchecked")
   @Override
   public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
+    //根据接口创建具体的类
+    //1.解析接口
     Class<?> classToCreate = resolveInterface(type);
     // we know types are assignable
+    //2.实例化类
     return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
   }
 
+  //默认没有属性可以设置
   @Override
   public void setProperties(Properties properties) {
     // no props for default
   }
 
+  //2.实例化类
   private <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
     try {
       Constructor<T> constructor;
+      //如果没有传入constructor，调用空构造函数，核心是调用Constructor.newInstance
       if (constructorArgTypes == null || constructorArgs == null) {
         constructor = type.getDeclaredConstructor();
         if (!constructor.isAccessible()) {
@@ -65,12 +75,14 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         }
         return constructor.newInstance();
       }
+      //如果传入constructor，调用传入的构造函数，核心是调用Constructor.newInstance
       constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
       if (!constructor.isAccessible()) {
         constructor.setAccessible(true);
       }
       return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
     } catch (Exception e) {
+        //如果出错，包装一下，重新抛出自己的异常
       StringBuilder argTypes = new StringBuilder();
       if (constructorArgTypes != null) {
         for (Class<?> argType : constructorArgTypes) {
@@ -89,17 +101,23 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+  //1.解析接口,将interface转为实际class
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {
+        //List|Collection|Iterable-->ArrayList
       classToCreate = ArrayList.class;
     } else if (type == Map.class) {
+        //Map->HashMap
       classToCreate = HashMap.class;
     } else if (type == SortedSet.class) { // issue #510 Collections Support
+        //SortedSet->TreeSet
       classToCreate = TreeSet.class;
     } else if (type == Set.class) {
+        //Set->HashSet
       classToCreate = HashSet.class;
     } else {
+        //除此以外，就用原来的类型
       classToCreate = type;
     }
     return classToCreate;
@@ -107,6 +125,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
   @Override
   public <T> boolean isCollection(Class<T> type) {
+      //是否是Collection的子类
     return Collection.class.isAssignableFrom(type);
   }
 

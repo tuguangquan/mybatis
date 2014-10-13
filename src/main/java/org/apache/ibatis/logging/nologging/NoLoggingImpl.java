@@ -20,6 +20,10 @@ import org.apache.ibatis.logging.Log;
 /**
  * @author Clinton Begin
  */
+/**
+ * 不做日志,所以都是空方法
+ * 
+ */
 public class NoLoggingImpl implements Log {
 
   public NoLoggingImpl(String clazz) {

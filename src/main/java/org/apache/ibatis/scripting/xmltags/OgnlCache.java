@@ -28,6 +28,7 @@ import org.apache.ibatis.builder.BuilderException;
  * Caches OGNL parsed expressions.
  *  
  * @see http://code.google.com/p/mybatis/issues/detail?id=342
+ * OGNL缓存,根据以上链接，大致是说ognl有性能问题，所以加了一个缓存
  *
  * @author Eduardo Macarron
  */
@@ -51,6 +52,7 @@ public final class OgnlCache {
   private static Object parseExpression(String expression) throws OgnlException {
     Object node = expressionCache.get(expression);
     if (node == null) {
+      //大致意思就是OgnlParser.topLevelExpression很慢，所以加个缓存，放到ConcurrentHashMap里面
       node = Ognl.parseExpression(expression);
       expressionCache.put(expression, node);
     }

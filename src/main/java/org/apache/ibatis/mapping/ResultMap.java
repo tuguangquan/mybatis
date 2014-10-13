@@ -27,6 +27,10 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+/**
+ * 结果映射
+ * MyBatis 中最重要最强大的元素
+ */
 public class ResultMap {
   private String id;
   private Class<?> type;
@@ -43,6 +47,7 @@ public class ResultMap {
   private ResultMap() {
   }
 
+  //静态内部类，建造者模式
   public static class Builder {
     private ResultMap resultMap = new ResultMap();
 

@@ -28,6 +28,10 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+/**
+ * 结果映射
+ * MyBatis 中最重要最强大的元素
+ */
 public class ResultMapping {
 
   private Configuration configuration;
@@ -49,6 +53,7 @@ public class ResultMapping {
   ResultMapping() {
   }
 
+  //静态内部类，建造者模式
   public static class Builder {
     private ResultMapping resultMapping = new ResultMapping();
 
@@ -141,6 +146,7 @@ public class ResultMapping {
       return resultMapping;
     }
 
+    //一些验证逻辑,验证result map有没有写错
     private void validate() {
       // Issue #697: cannot define both nestedQueryId and nestedResultMapId
       if (resultMapping.nestedQueryId != null && resultMapping.nestedResultMapId != null) {

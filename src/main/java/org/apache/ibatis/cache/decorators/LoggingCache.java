@@ -24,8 +24,14 @@ import org.apache.ibatis.logging.LogFactory;
 /**
  * @author Clinton Begin
  */
+/**
+ * 日志缓存
+ * 添加功能：取缓存时打印命中率
+ *
+ */
 public class LoggingCache implements Cache {
 
+  //用的mybatis自己的抽象Log
   private Log log;  
   private Cache delegate;
   protected int requests = 0;
@@ -51,14 +57,18 @@ public class LoggingCache implements Cache {
     delegate.putObject(key, object);
   }
 
+  //目的就是getObject时，打印命中率
   @Override
   public Object getObject(Object key) {
+      //访问一次requests加一
     requests++;
     final Object value = delegate.getObject(key);
+    //命中了则hits加一
     if (value != null) {
       hits++;
     }
     if (log.isDebugEnabled()) {
+        //就是打印命中率 hits/requests
       log.debug("Cache Hit Ratio [" + getId() + "]: " + getHitRatio());
     }
     return value;

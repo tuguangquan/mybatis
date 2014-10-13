@@ -32,6 +32,9 @@ import org.apache.ibatis.transaction.TransactionFactory;
 /**
  * @author Clinton Begin
  */
+/**
+ * JdbcTransaction工厂
+ */
 public class JdbcTransactionFactory implements TransactionFactory {
 
   @Override

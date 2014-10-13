@@ -20,6 +20,10 @@ package org.apache.ibatis.jdbc;
  *
  * @author Jeff Butler
  */
+/**
+ * SQL建造者,已废弃
+ * 可以看到仅仅是包装了一层，转而去调用SQL的方法
+ */
 public class SqlBuilder {
 
   private static final ThreadLocal<SQL> localSQL = new ThreadLocal<SQL>();

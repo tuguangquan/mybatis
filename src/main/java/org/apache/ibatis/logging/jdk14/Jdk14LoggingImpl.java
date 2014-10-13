@@ -23,6 +23,10 @@ import org.apache.ibatis.logging.Log;
 /**
  * @author Clinton Begin
  */
+/**
+ * 用的jdk1.4 logger里的Logger
+ * 
+ */
 public class Jdk14LoggingImpl implements Log {
 
   private Logger log;

@@ -26,6 +26,7 @@ import java.util.Properties;
 
 /**
  * @author Clinton Begin
+ * 类似于commons-io里的一些util方法,不过实际上没有任何地方用到了这个类
  */
 public class ExternalResources {
 
@@ -33,6 +34,7 @@ public class ExternalResources {
     // do nothing
   }
 
+  //复制文件
   public static void copyExternalResource(File sourceFile, File destFile) throws IOException {
     if (!destFile.exists()) {
       destFile.createNewFile();
@@ -51,6 +53,7 @@ public class ExternalResources {
 
   }
 
+  //安静地关闭
   private static void closeQuietly(Closeable closeable) {
     if (closeable != null) {
       try {
@@ -61,6 +64,7 @@ public class ExternalResources {
     }
   }
 
+  //读取property
   public static String getConfiguredTemplate(String templatePath, String templateProperty) throws FileNotFoundException {
     String templateName = "";
     Properties migrationProperties = new Properties();

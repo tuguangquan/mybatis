@@ -25,23 +25,36 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+/**
+ * 参数映射
+ * 
+ */
 public class ParameterMapping {
 
   private Configuration configuration;
 
+  //例子：#{property,javaType=int,jdbcType=NUMERIC}
+  
+  //property
   private String property;
+  //mode
   private ParameterMode mode;
+  //javaType=int
   private Class<?> javaType = Object.class;
+  //jdbcType=NUMERIC
   private JdbcType jdbcType;
+  //numericScale
   private Integer numericScale;
   private TypeHandler<?> typeHandler;
   private String resultMapId;
+  //jdbcType=NUMERIC
   private String jdbcTypeName;
   private String expression;
 
   private ParameterMapping() {
   }
 
+  //静态内部类，建造者模式
   public static class Builder {
     private ParameterMapping parameterMapping = new ParameterMapping();
 
@@ -122,6 +135,7 @@ public class ParameterMapping {
     }
 
     private void resolveTypeHandler() {
+        //如果没有指定特殊的typeHandler，则根据javaType，jdbcType来查表确定一个默认的typeHandler
       if (parameterMapping.typeHandler == null && parameterMapping.javaType != null) {
         Configuration configuration = parameterMapping.configuration;
         TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();

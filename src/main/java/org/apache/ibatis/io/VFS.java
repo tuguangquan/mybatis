@@ -29,6 +29,7 @@ import org.apache.ibatis.logging.LogFactory;
 
 /**
  * Provides a very simple API for accessing resources within an application server.
+ * 虚拟文件系统(VFS),用来读取服务器里的资源
  * 
  * @author Ben Gunter
  */
@@ -36,9 +37,11 @@ public abstract class VFS {
   private static final Log log = LogFactory.getLog(ResolverUtil.class);
 
   /** The built-in implementations. */
+  //默认提供2个实现 JBoss6VFS,DefaultVFS
   public static final Class<?>[] IMPLEMENTATIONS = { JBoss6VFS.class, DefaultVFS.class };
 
   /** The list to which implementations are added by {@link #addImplClass(Class)}. */
+  //这里是提供一个用户扩展点，可以让用户自定义VFS实现
   public static final List<Class<? extends VFS>> USER_IMPLEMENTATIONS = new ArrayList<Class<? extends VFS>>();
 
   /** Singleton instance. */
@@ -60,6 +63,7 @@ public abstract class VFS {
     impls.addAll(Arrays.asList((Class<? extends VFS>[]) IMPLEMENTATIONS));
 
     // Try each implementation class until a valid one is found
+    //遍历查找实现类，返回第一个找到的
     VFS vfs = null;
     for (int i = 0; vfs == null || !vfs.isValid(); i++) {
       Class<? extends VFS> impl = impls.get(i);

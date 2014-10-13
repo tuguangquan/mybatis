@@ -43,32 +43,50 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
 /**
  * @author Clinton Begin
  */
+/**
+ * 反射器, 属性->getter/setter的映射器，而且加了缓存
+ * 可参考ReflectorTest来理解这个类的用处
+ *
+ */
 public class Reflector {
 
   private static boolean classCacheEnabled = true;
   private static final String[] EMPTY_STRING_ARRAY = new String[0];
-  private static final ConcurrentMap<Class<?>, Reflector> REFLECTOR_MAP = new ConcurrentHashMap<Class<?>, Reflector>();
+  //这里用ConcurrentHashMap，多线程支持，作为一个缓存
+  private static final Map<Class<?>, Reflector> REFLECTOR_MAP = new ConcurrentHashMap<Class<?>, Reflector>();
 
   private Class<?> type;
+  //getter的属性列表
   private String[] readablePropertyNames = EMPTY_STRING_ARRAY;
+  //setter的属性列表
   private String[] writeablePropertyNames = EMPTY_STRING_ARRAY;
+  //setter的方法列表
   private Map<String, Invoker> setMethods = new HashMap<String, Invoker>();
+  //getter的方法列表
   private Map<String, Invoker> getMethods = new HashMap<String, Invoker>();
+  //setter的类型列表
   private Map<String, Class<?>> setTypes = new HashMap<String, Class<?>>();
+  //getter的类型列表
   private Map<String, Class<?>> getTypes = new HashMap<String, Class<?>>();
+  //构造函数
   private Constructor<?> defaultConstructor;
 
   private Map<String, String> caseInsensitivePropertyMap = new HashMap<String, String>();
 
   private Reflector(Class<?> clazz) {
     type = clazz;
+    //加入构造函数
     addDefaultConstructor(clazz);
+    //加入getter
     addGetMethods(clazz);
+    //加入setter
     addSetMethods(clazz);
+    //加入字段
     addFields(clazz);
     readablePropertyNames = getMethods.keySet().toArray(new String[getMethods.keySet().size()]);
     writeablePropertyNames = setMethods.keySet().toArray(new String[setMethods.keySet().size()]);
     for (String propName : readablePropertyNames) {
+        //这里为了能找到某一个属性，就把他变成大写作为map的key。。。
       caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
     }
     for (String propName : writeablePropertyNames) {
@@ -96,6 +114,7 @@ public class Reflector {
 
   private void addGetMethods(Class<?> cls) {
     Map<String, List<Method>> conflictingGetters = new HashMap<String, List<Method>>();
+    //这里getter和setter都调用了getClassMethods，有点浪费效率了。不妨把addGetMethods,addSetMethods合并成一个方法叫addMethods
     Method[] methods = getClassMethods(cls);
     for (Method method : methods) {
       String name = method.getName();
@@ -272,6 +291,7 @@ public class Reflector {
    * declared in this class and any superclass.
    * We use this method, instead of the simpler Class.getMethods(),
    * because we want to look for private methods as well.
+   * 得到所有方法，包括private方法，包括父类方法.包括接口方法
    *
    * @param cls The class
    * @return An array containing all methods in this class
@@ -300,6 +320,7 @@ public class Reflector {
   private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
     for (Method currentMethod : methods) {
       if (!currentMethod.isBridge()) {
+          //取得签名
         String signature = getSignature(currentMethod);
         // check to see if the method is already known
         // if it is known, then an extended class must have
@@ -459,6 +480,7 @@ public class Reflector {
 
   /*
    * Gets an instance of ClassInfo for the specified class.
+   * 得到某个类的反射器，是静态方法，而且要缓存，又要多线程，所以REFLECTOR_MAP是一个ConcurrentHashMap
    *
    * @param clazz The class for which to lookup the method cache.
    * @return The method cache for the class
@@ -466,6 +488,7 @@ public class Reflector {
   public static Reflector forClass(Class<?> clazz) {
     if (classCacheEnabled) {
       // synchronized (clazz) removed see issue #461
+        //对于每个类来说，我们假设它是不会变的，这样可以考虑将这个类的信息(构造函数，getter,setter,字段)加入缓存，以提高速度
       Reflector cached = REFLECTOR_MAP.get(clazz);
       if (cached == null) {
         cached = new Reflector(clazz);

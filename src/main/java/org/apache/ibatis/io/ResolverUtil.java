@@ -53,6 +53,8 @@ import org.apache.ibatis.logging.LogFactory;
  * resolver.find(new CustomTest(), pkg2);
  * Collection&lt;ActionBean&gt; beans = resolver.getClasses();
  * </pre>
+ * 
+ * 找一个package下满足条件的所有类
  *
  * @author Tim Fennell
  */
@@ -213,10 +215,12 @@ public class ResolverUtil<T> {
    * @param packageName the name of the package from which to start scanning for
    *        classes, e.g. {@code net.sourceforge.stripes}
    */
+  //主要的方法，找一个package下满足条件的所有类,被TypeHanderRegistry,MapperRegistry,TypeAliasRegistry调用
   public ResolverUtil<T> find(Test test, String packageName) {
     String path = getPackagePath(packageName);
 
     try {
+        //通过VFS来深入jar包里面去找一个class
       List<String> children = VFS.getInstance().list(path);
       for (String child : children) {
         if (child.endsWith(".class")) {

@@ -31,6 +31,10 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 /**
  * @author Larry Meadors
  */
+/**
+ * SqlSession管理员,可参考SqlSessionManagerTest
+ *
+ */
 public class SqlSessionManager implements SqlSessionFactory, SqlSession {
 
   private final SqlSessionFactory sqlSessionFactory;
@@ -321,6 +325,7 @@ public class SqlSessionManager implements SqlSessionFactory, SqlSession {
     }
   }
 
+  //代理模式
   private class SqlSessionInterceptor implements InvocationHandler {
     public SqlSessionInterceptor() {
         // Prevent Synthetic Access
@@ -330,12 +335,14 @@ public class SqlSessionManager implements SqlSessionFactory, SqlSession {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       final SqlSession sqlSession = SqlSessionManager.this.localSqlSession.get();
       if (sqlSession != null) {
+          //如果当前线程已经有SqlSession了，则直接调用
         try {
           return method.invoke(sqlSession, args);
         } catch (Throwable t) {
           throw ExceptionUtil.unwrapThrowable(t);
         }
       } else {
+          //如果当前线程没有SqlSession，先打开session，再调用,最后提交
         final SqlSession autoSqlSession = openSession();
         try {
           final Object result = method.invoke(autoSqlSession, args);

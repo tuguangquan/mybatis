@@ -25,8 +25,13 @@ import org.slf4j.spi.LocationAwareLogger;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+/**
+ * slf4j的logger
+ *
+ */
 public class Slf4jImpl implements Log {
 
+  //代理模式，委派给Slf4jLoggerImpl或者Slf4jLocationAwareLoggerImpl,所以这个类只是一个wrapper
   private Log log;
 
   public Slf4jImpl(String clazz) {

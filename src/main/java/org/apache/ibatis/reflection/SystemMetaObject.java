@@ -24,6 +24,10 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 /**
  * @author Clinton Begin
  */
+/**
+ * 一些系统级别的元对象
+ *
+ */
 public final class SystemMetaObject {
 
   public static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
@@ -34,6 +38,7 @@ public final class SystemMetaObject {
     // Prevent Instantiation of Static Class
   }
 
+  //空对象
   private static class NullObject {
   }
 

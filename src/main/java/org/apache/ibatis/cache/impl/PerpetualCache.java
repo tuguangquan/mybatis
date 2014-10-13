@@ -25,10 +25,17 @@ import org.apache.ibatis.cache.CacheException;
 /**
  * @author Clinton Begin
  */
+/**
+ * 永久缓存
+ * 一旦存入就一直保持
+ *
+ */
 public class PerpetualCache implements Cache {
 
+    //每个永久缓存有一个ID来识别
   private String id;
 
+  //内部就是一个HashMap,所有方法基本就是直接调用HashMap的方法,不支持多线程？
   private Map<Object, Object> cache = new HashMap<Object, Object>();
 
   public PerpetualCache(String id) {
@@ -72,6 +79,7 @@ public class PerpetualCache implements Cache {
 
   @Override
   public boolean equals(Object o) {
+    //只要id相等就认为两个cache相同
     if (getId() == null) {
       throw new CacheException("Cache instances require an ID.");
     }

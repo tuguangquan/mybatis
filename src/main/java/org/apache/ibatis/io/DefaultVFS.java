@@ -36,6 +36,7 @@ import org.apache.ibatis.logging.LogFactory;
 
 /**
  * A default implementation of {@link VFS} that works for most application servers.
+ * 默认的VFS，提供了读取jar包的方法
  * 
  * @author Ben Gunter
  */
@@ -62,6 +63,7 @@ public class DefaultVFS extends VFS {
       if (jarUrl != null) {
         is = jarUrl.openStream();
         log.debug("Listing " + url);
+        //用JDK自带的JarInputStream来读取jar包
         resources = listResources(new JarInputStream(is), path);
       }
       else {

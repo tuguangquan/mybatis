@@ -23,6 +23,11 @@ import java.util.List;
 /**
  * @author Clinton Begin
  */
+/**
+ * 缓存key
+ * 一般缓存框架的数据结构基本上都是 Key-Value 方式存储，
+ * MyBatis 对于其 Key 的生成采取规则为：[mappedStementId + offset + limit + SQL + queryParams + environment]生成一个哈希码
+ */
 public class CacheKey implements Cloneable, Serializable {
 
   private static final long serialVersionUID = 1146682552656046210L;
@@ -45,6 +50,7 @@ public class CacheKey implements Cloneable, Serializable {
     this.updateList = new ArrayList<Object>();
   }
 
+  //传入一个Object数组，更新hashcode和效验码
   public CacheKey(Object[] objects) {
     this();
     updateAll(objects);
@@ -56,17 +62,20 @@ public class CacheKey implements Cloneable, Serializable {
 
   public void update(Object object) {
     if (object != null && object.getClass().isArray()) {
+        //如果是数组，则循环调用doUpdate
       int length = Array.getLength(object);
       for (int i = 0; i < length; i++) {
         Object element = Array.get(object, i);
         doUpdate(element);
       }
     } else {
+        //否则，doUpdate
       doUpdate(object);
     }
   }
 
   private void doUpdate(Object object) {
+    //计算hash值，校验码
     int baseHashCode = object == null ? 1 : object.hashCode();
 
     count++;
@@ -75,6 +84,7 @@ public class CacheKey implements Cloneable, Serializable {
 
     hashcode = multiplier * hashcode + baseHashCode;
 
+    //同时将对象加入列表，这样万一两个CacheKey的hash码碰巧一样，再根据对象严格equals来区分
     updateList.add(object);
   }
 
@@ -95,6 +105,7 @@ public class CacheKey implements Cloneable, Serializable {
 
     final CacheKey cacheKey = (CacheKey) object;
 
+    //先比hashcode，checksum，count，理论上可以快速比出来
     if (hashcode != cacheKey.hashcode) {
       return false;
     }
@@ -105,6 +116,8 @@ public class CacheKey implements Cloneable, Serializable {
       return false;
     }
 
+    //万一两个CacheKey的hash码碰巧一样，再根据对象严格equals来区分
+    //这里两个list的size没比是否相等，其实前面count相等就已经保证了
     for (int i = 0; i < updateList.size(); i++) {
       Object thisObject = updateList.get(i);
       Object thatObject = cacheKey.updateList.get(i);

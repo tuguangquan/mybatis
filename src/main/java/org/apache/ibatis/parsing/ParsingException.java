@@ -20,6 +20,9 @@ import org.apache.ibatis.exceptions.PersistenceException;
 /**
  * @author Clinton Begin
  */
+/**
+ * 解析异常
+ */
 public class ParsingException extends PersistenceException {
   private static final long serialVersionUID = -176685891441325943L;
 

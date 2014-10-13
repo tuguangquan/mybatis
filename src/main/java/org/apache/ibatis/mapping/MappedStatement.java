@@ -31,6 +31,10 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+/**
+ * 映射的语句
+ *
+ */
 public final class MappedStatement {
 
   private String resource;
@@ -40,6 +44,7 @@ public final class MappedStatement {
   private Integer timeout;
   private StatementType statementType;
   private ResultSetType resultSetType;
+  //SQL源码
   private SqlSource sqlSource;
   private Cache cache;
   private ParameterMap parameterMap;
@@ -61,6 +66,7 @@ public final class MappedStatement {
     // constructor disabled
   }
 
+  //静态内部类，建造者模式
   public static class Builder {
     private MappedStatement mappedStatement = new MappedStatement();
 
@@ -277,7 +283,9 @@ public final class MappedStatement {
   }
   
   public BoundSql getBoundSql(Object parameterObject) {
+	//其实就是调用sqlSource.getBoundSql
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
+    //剩下的可以暂时忽略
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings == null || parameterMappings.isEmpty()) {
       boundSql = new BoundSql(configuration, boundSql.getSql(), parameterMap.getParameterMappings(), parameterObject);

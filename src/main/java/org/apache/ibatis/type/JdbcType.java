@@ -22,11 +22,16 @@ import java.util.Map;
 /**
  * @author Clinton Begin
  */
+/**
+ * JDBC类型枚举
+ * 
+ */
 public enum JdbcType {
   /*
    * This is added to enable basic support for the
    * ARRAY data type - but a custom type handler is still required
    */
+  //就是包装一下java.sql.Types
   ARRAY(Types.ARRAY),
   BIT(Types.BIT),
   TINYINT(Types.TINYINT),
@@ -54,6 +59,7 @@ public enum JdbcType {
   BOOLEAN(Types.BOOLEAN),
   CURSOR(-10), // Oracle
   UNDEFINED(Integer.MIN_VALUE + 1000),
+  //太周到了，还考虑jdk5兼容性，jdk6的常量都不是直接引用
   NVARCHAR(Types.NVARCHAR), // JDK6
   NCHAR(Types.NCHAR), // JDK6
   NCLOB(Types.NCLOB), // JDK6
@@ -62,6 +68,7 @@ public enum JdbcType {
   public final int TYPE_CODE;
   private static Map<Integer,JdbcType> codeLookup = new HashMap<Integer,JdbcType>();
 
+  //一开始就将数字对应的枚举型放入hashmap
   static {
     for (JdbcType type : JdbcType.values()) {
       codeLookup.put(type.TYPE_CODE, type);

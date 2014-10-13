@@ -20,11 +20,13 @@ import java.net.URL;
 
 /**
  * A class to wrap access to multiple class loaders making them work as one
+ *封装了5个类加载器,见getClassLoaders方法
  *
  * @author Clinton Begin
  */
 public class ClassLoaderWrapper {
 
+  //defaultClassLoader没地方初始化啊?
   ClassLoader defaultClassLoader;
   ClassLoader systemClassLoader;
 
@@ -103,6 +105,7 @@ public class ClassLoaderWrapper {
 
   /*
    * Try to get a resource from a group of classloaders
+   * 用5个类加载器一个个查找资源，只要其中任何一个找到，就返回
    *
    * @param resource    - the resource to get
    * @param classLoader - the classloaders to examine
@@ -130,6 +133,7 @@ public class ClassLoaderWrapper {
 
   /*
    * Get a resource as a URL using the current class path
+   * 用5个类加载器一个个查找资源，只要其中任何一个找到，就返回
    *
    * @param resource    - the resource to locate
    * @param classLoader - the class loaders to examine
@@ -169,6 +173,7 @@ public class ClassLoaderWrapper {
 
   /*
    * Attempt to load a class from a group of classloaders
+   * 用5个类加载器一个个调用Class.forName(加载类)，只要其中任何一个加载成功，就返回
    *
    * @param name        - the class to load
    * @param classLoader - the group of classloaders to examine
@@ -201,6 +206,7 @@ public class ClassLoaderWrapper {
 
   }
 
+  //一共5个类加载器
   ClassLoader[] getClassLoaders(ClassLoader classLoader) {
     return new ClassLoader[]{
         classLoader,

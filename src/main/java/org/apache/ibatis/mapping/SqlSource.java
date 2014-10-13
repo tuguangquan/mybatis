@@ -21,6 +21,10 @@ package org.apache.ibatis.mapping;
  *
  * @author Clinton Begin
  */
+/**
+ * SQL源码
+ * 
+ */
 public interface SqlSource {
 
   BoundSql getBoundSql(Object parameterObject);

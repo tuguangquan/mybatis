@@ -21,6 +21,10 @@ import org.apache.commons.logging.LogFactory;
 /**
  * @author Clinton Begin
  */
+/**
+ * 用的commons logging里的Log和LogFactory
+ *
+ */
 public class JakartaCommonsLoggingImpl implements org.apache.ibatis.logging.Log {
 
   private Log log;
