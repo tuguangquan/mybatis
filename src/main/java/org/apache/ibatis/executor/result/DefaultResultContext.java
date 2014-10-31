@@ -20,6 +20,10 @@ import org.apache.ibatis.session.ResultContext;
 /**
  * @author Clinton Begin
  */
+/**
+ * 默认结果上下文
+ * 
+ */
 public class DefaultResultContext implements ResultContext {
 
   private Object resultObject;
@@ -47,6 +51,7 @@ public class DefaultResultContext implements ResultContext {
     return stopped;
   }
 
+  //应该是每次调用nextResultObject这个方法，这样内部count就加1
   public void nextResultObject(Object resultObject) {
     resultCount++;
     this.resultObject = resultObject;

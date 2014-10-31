@@ -43,6 +43,9 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+/**
+ * Cglib延迟加载代理工厂
+ */
 public class CglibProxyFactory implements ProxyFactory {
 
   private static final Log log = LogFactory.getLog(CglibProxyFactory.class);
@@ -51,6 +54,7 @@ public class CglibProxyFactory implements ProxyFactory {
 
   public CglibProxyFactory() {
     try {
+      //先检查是否有Cglib
       Resources.classForName("net.sf.cglib.proxy.Enhancer");
     } catch (Throwable e) {
       throw new IllegalStateException("Cannot enable lazy loading because CGLIB is not available. Add CGLIB to your classpath.", e);
@@ -72,7 +76,8 @@ public class CglibProxyFactory implements ProxyFactory {
   }
 
   static Object crateProxy(Class<?> type, Callback callback, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
-    Enhancer enhancer = new Enhancer();
+    //核心就是用cglib的Enhancer
+	Enhancer enhancer = new Enhancer();
     enhancer.setCallback(callback);
     enhancer.setSuperclass(type);
     try {
@@ -123,6 +128,7 @@ public class CglibProxyFactory implements ProxyFactory {
       return enhanced;
     }
 
+    //核心就是反调intercept
     @Override
     public Object intercept(Object enhanced, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
       final String methodName = method.getName();
@@ -142,10 +148,12 @@ public class CglibProxyFactory implements ProxyFactory {
               return original;
             }
           } else {
+        	//这里是关键，延迟加载就是调用ResultLoaderMap.loadAll()
             if (lazyLoader.size() > 0 && !FINALIZE_METHOD.equals(methodName)) {
               if (aggressive || lazyLoadTriggerMethods.contains(methodName)) {
                 lazyLoader.loadAll();
               } else if (PropertyNamer.isProperty(methodName)) {
+              	//或者调用ResultLoaderMap.load()
                 final String property = PropertyNamer.methodToProperty(methodName);
                 if (lazyLoader.hasLoader(property)) {
                   lazyLoader.load(property);

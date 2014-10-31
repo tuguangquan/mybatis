@@ -23,8 +23,13 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * @author Clinton Begin
  */
+/**
+ * 键值生成器
+ *
+ */
 public interface KeyGenerator {
 
+  //定了2个回调方法，processBefore,processAfter
   void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter);
 
   void processAfter(Executor executor, MappedStatement ms, Statement stmt, Object parameter);

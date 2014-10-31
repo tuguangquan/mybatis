@@ -33,6 +33,10 @@ import org.apache.ibatis.session.RowBounds;
 /**
  * @author Clinton Begin
  */
+/**
+ * 简单语句处理器(STATEMENT)
+ * 
+ */
 public class SimpleStatementHandler extends BaseStatementHandler {
 
   public SimpleStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
@@ -54,6 +58,7 @@ public class SimpleStatementHandler extends BaseStatementHandler {
       rows = statement.getUpdateCount();
       keyGenerator.processAfter(executor, mappedStatement, statement, parameterObject);
     } else {
+      //如果没有keyGenerator,直接调用Statement.execute和Statement.getUpdateCount
       statement.execute(sql);
       rows = statement.getUpdateCount();
     }
@@ -63,18 +68,22 @@ public class SimpleStatementHandler extends BaseStatementHandler {
   @Override
   public void batch(Statement statement) throws SQLException {
     String sql = boundSql.getSql();
+    //调用Statement.addBatch
     statement.addBatch(sql);
   }
 
+  //select-->结果给ResultHandler
   @Override
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     String sql = boundSql.getSql();
     statement.execute(sql);
+    //先执行Statement.execute，然后交给ResultSetHandler.handleResultSets
     return resultSetHandler.<E>handleResultSets(statement);
   }
 
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
+    //调用Connection.createStatement
     if (mappedStatement.getResultSetType() != null) {
       return connection.createStatement(mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
     } else {

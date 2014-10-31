@@ -36,6 +36,10 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+/**
+ * 语句处理器的基类
+ * 
+ */
 public abstract class BaseStatementHandler implements StatementHandler {
 
   protected final Configuration configuration;
@@ -66,7 +70,9 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
     this.boundSql = boundSql;
 
+    //生成parameterHandler
     this.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);
+    //生成resultSetHandler
     this.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, rowBounds, parameterHandler, resultHandler, boundSql);
   }
 
@@ -80,13 +86,17 @@ public abstract class BaseStatementHandler implements StatementHandler {
     return parameterHandler;
   }
 
+  //准备语句
   @Override
   public Statement prepare(Connection connection) throws SQLException {
     ErrorContext.instance().sql(boundSql.getSql());
     Statement statement = null;
     try {
+      //实例化Statement
       statement = instantiateStatement(connection);
+      //设置超时
       setStatementTimeout(statement);
+      //设置读取条数
       setFetchSize(statement);
       return statement;
     } catch (SQLException e) {
@@ -98,8 +108,10 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+  //如何实例化Statement，交给子类做
   protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
 
+  //设置超时,其实就是调用Statement.setQueryTimeout
   protected void setStatementTimeout(Statement stmt) throws SQLException {
     Integer timeout = mappedStatement.getTimeout();
     Integer defaultTimeout = configuration.getDefaultStatementTimeout();
@@ -110,6 +122,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+  //设置读取条数,其实就是调用Statement.setFetchSize
   protected void setFetchSize(Statement stmt) throws SQLException {
     Integer fetchSize = mappedStatement.getFetchSize();
     if (fetchSize != null) {
@@ -117,6 +130,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+  //关闭语句
   protected void closeStatement(Statement statement) {
     try {
       if (statement != null) {
@@ -127,6 +141,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+  //生成key
   protected void generateKeys(Object parameter) {
     KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
     ErrorContext.instance().store();

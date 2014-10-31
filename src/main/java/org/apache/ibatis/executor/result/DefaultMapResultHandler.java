@@ -26,8 +26,13 @@ import org.apache.ibatis.session.ResultHandler;
 /**
  * @author Clinton Begin
  */
+/**
+ * 默认Map结果处理器
+ * 
+ */
 public class DefaultMapResultHandler<K, V> implements ResultHandler {
 
+  //内部实现是存了一个Map
   private final Map<K, V> mappedResults;
   private final String mapKey;
   private final ObjectFactory objectFactory;
@@ -44,11 +49,16 @@ public class DefaultMapResultHandler<K, V> implements ResultHandler {
   @Override
   public void handleResult(ResultContext context) {
     // TODO is that assignment always true?
+    //得到一条记录
+    //这边黄色警告没法去掉了？因为返回Object型
     final V value = (V) context.getResultObject();
+    //MetaObject.forObject,包装一下记录
+    //MetaObject是用反射来包装各种类型
     final MetaObject mo = MetaObject.forObject(value, objectFactory, objectWrapperFactory);
     // TODO is that assignment always true?
     final K key = (K) mo.getValue(mapKey);
     mappedResults.put(key, value);
+    //这个类主要目的是把得到的List转为Map
   }
 
   public Map<K, V> getMappedResults() {

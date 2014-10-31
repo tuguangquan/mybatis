@@ -33,6 +33,10 @@ import org.apache.ibatis.session.RowBounds;
 /**
  * @author Clinton Begin
  */
+/**
+ * 预处理语句处理器(PREPARED)
+ * 
+ */
 public class PreparedStatementHandler extends BaseStatementHandler {
 
   public PreparedStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
@@ -41,6 +45,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   public int update(Statement statement) throws SQLException {
+    //调用PreparedStatement.execute和PreparedStatement.getUpdateCount
     PreparedStatement ps = (PreparedStatement) statement;
     ps.execute();
     int rows = ps.getUpdateCount();
@@ -65,6 +70,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
+    //调用Connection.prepareStatement
     String sql = boundSql.getSql();
     if (mappedStatement.getKeyGenerator() instanceof Jdbc3KeyGenerator) {
       String[] keyColumnNames = mappedStatement.getKeyColumns();
@@ -82,6 +88,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
 
   @Override
   public void parameterize(Statement statement) throws SQLException {
+    //调用ParameterHandler.setParameters
     parameterHandler.setParameters((PreparedStatement) statement);
   }
 

@@ -36,6 +36,10 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  */
+/**
+ * 存储过程语句处理器(CALLABLE)
+ * 
+ */
 public class CallableStatementHandler extends BaseStatementHandler {
 
   public CallableStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
@@ -44,12 +48,15 @@ public class CallableStatementHandler extends BaseStatementHandler {
 
   @Override
   public int update(Statement statement) throws SQLException {
+    //这个方法和PreparedStatementHandler代码基本一样,就多了最后的handleOutputParameters
+    //调用Statement.execute和Statement.getUpdateCount
     CallableStatement cs = (CallableStatement) statement;
     cs.execute();
     int rows = cs.getUpdateCount();
     Object parameterObject = boundSql.getParameterObject();
     KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
     keyGenerator.processAfter(executor, mappedStatement, cs, parameterObject);
+    //然后交给ResultSetHandler.handleOutputParameters
     resultSetHandler.handleOutputParameters(cs);
     return rows;
   }
@@ -71,6 +78,7 @@ public class CallableStatementHandler extends BaseStatementHandler {
 
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
+    //调用Connection.prepareCall
     String sql = boundSql.getSql();
     if (mappedStatement.getResultSetType() != null) {
       return connection.prepareCall(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
@@ -81,7 +89,9 @@ public class CallableStatementHandler extends BaseStatementHandler {
 
   @Override
   public void parameterize(Statement statement) throws SQLException {
+    //注册OUT参数
     registerOutputParameters((CallableStatement) statement);
+    //调用ParameterHandler.setParameters
     parameterHandler.setParameters((CallableStatement) statement);
   }
 
@@ -89,6 +99,7 @@ public class CallableStatementHandler extends BaseStatementHandler {
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     for (int i = 0, n = parameterMappings.size(); i < n; i++) {
       ParameterMapping parameterMapping = parameterMappings.get(i);
+      //只处理OUT|INOUT
       if (parameterMapping.getMode() == ParameterMode.OUT || parameterMapping.getMode() == ParameterMode.INOUT) {
         if (null == parameterMapping.getJdbcType()) {
           throw new ExecutorException("The JDBC Type must be specified for output parameter.  Parameter: " + parameterMapping.getProperty());
@@ -96,6 +107,7 @@ public class CallableStatementHandler extends BaseStatementHandler {
           if (parameterMapping.getNumericScale() != null && (parameterMapping.getJdbcType() == JdbcType.NUMERIC || parameterMapping.getJdbcType() == JdbcType.DECIMAL)) {
             cs.registerOutParameter(i + 1, parameterMapping.getJdbcType().TYPE_CODE, parameterMapping.getNumericScale());
           } else {
+            //核心是调用CallableStatement.registerOutParameter
             if (parameterMapping.getJdbcTypeName() == null) {
               cs.registerOutParameter(i + 1, parameterMapping.getJdbcType().TYPE_CODE);
             } else {
