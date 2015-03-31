@@ -40,7 +40,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  */
 /**
- * 默认SqlSession
+ * 默认SqlSession实现
  *
  */
 public class DefaultSqlSession implements SqlSession {
@@ -48,6 +48,9 @@ public class DefaultSqlSession implements SqlSession {
   private Configuration configuration;
   private Executor executor;
 
+  /**
+   * 是否自动提交
+   */
   private boolean autoCommit;
   private boolean dirty;
   
@@ -72,6 +75,8 @@ public class DefaultSqlSession implements SqlSession {
   public <T> T selectOne(String statement, Object parameter) {
     // Popular vote was to return null on 0 results and throw exception on too many.
     //转而去调用selectList,很简单的，如果得到0条则返回null，得到1条则返回1条，得到多条报TooManyResultsException错
+    // 特别需要主要的是当没有查询到结果的时候就会返回null。因此一般建议在mapper中编写resultType的时候使用包装类型
+    //而不是基本类型，比如推荐使用Integer而不是int。这样就可以避免NPE
     List<T> list = this.<T>selectList(statement, parameter);
     if (list.size() == 1) {
       return list.get(0);

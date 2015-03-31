@@ -99,11 +99,11 @@ public interface SqlSession extends Closeable {
    * of results into a Map based on one of the properties in the resulting
    * objects.
    * Eg. Return a of Map[Integer,Author] for selectMap("selectAuthors","id")
-   * 获取多条记录,并存入Map
+   * 将查询到的结果列表转换为Map类型。
    * @param <K> the returned Map keys type
    * @param <V> the returned Map values type
    * @param statement Unique identifier matching the statement to use.
-   * @param mapKey The property to use as key for each value in the list.
+   * @param mapKey The property to use as key for each value in the list. 这个参数会作为结果map的key
    * @return Map containing key pair data.
    */
   <K, V> Map<K, V> selectMap(String statement, String mapKey);
@@ -112,7 +112,7 @@ public interface SqlSession extends Closeable {
    * The selectMap is a special case in that it is designed to convert a list
    * of results into a Map based on one of the properties in the resulting
    * objects.
-   * 获取多条记录,并存入Map
+   * 将查询到的结果列表转换为Map类型。这个方法容许我们传入需要的参数
    * @param <K> the returned Map keys type
    * @param <V> the returned Map values type
    * @param statement Unique identifier matching the statement to use.
@@ -140,7 +140,7 @@ public interface SqlSession extends Closeable {
   /**
    * Retrieve a single row mapped from the statement key and parameter
    * using a {@code ResultHandler}.
-   * 获取一条记录,并转交给ResultHandler处理
+   *
    * @param statement Unique identifier matching the statement to use.
    * @param parameter A parameter object to pass to the statement.
    * @param handler ResultHandler that will handle each retrieved row
@@ -151,7 +151,8 @@ public interface SqlSession extends Closeable {
   /**
    * Retrieve a single row mapped from the statement
    * using a {@code ResultHandler}.
-   * 获取一条记录,并转交给ResultHandler处理
+   * 获取一条记录,并转交给ResultHandler处理。这个方法容许我们自己定义对
+   * 查询到的行的处理方式。不过一般用的并不是很多
    * @param statement Unique identifier matching the statement to use.
    * @param handler ResultHandler that will handle each retrieved row
    * @return Mapped object
@@ -171,7 +172,7 @@ public interface SqlSession extends Closeable {
 
   /**
    * Execute an insert statement.
-   * 插入记录
+   * 插入记录。一般情况下这个语句在实际项目中用的并不是太多，而且更多使用带参数的insert函数
    * @param statement Unique identifier matching the statement to execute.
    * @return int The number of rows affected by the insert.
    */
@@ -181,16 +182,16 @@ public interface SqlSession extends Closeable {
    * Execute an insert statement with the given parameter object. Any generated
    * autoincrement values or selectKey entries will modify the given parameter
    * object properties. Only the number of rows affected will be returned.
-   * 插入记录
+   * 插入记录，容许传入参数。
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
-   * @return int The number of rows affected by the insert.
+   * @return int The number of rows affected by the insert. 注意返回的是受影响的行数
    */
   int insert(String statement, Object parameter);
 
   /**
    * Execute an update statement. The number of rows affected will be returned.
-   * 更新记录
+   * 更新记录。返回的是受影响的行数
    * @param statement Unique identifier matching the statement to execute.
    * @return int The number of rows affected by the update.
    */
@@ -201,7 +202,7 @@ public interface SqlSession extends Closeable {
    * 更新记录
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
-   * @return int The number of rows affected by the update.
+   * @return int The number of rows affected by the update. 返回的是受影响的行数
    */
   int update(String statement, Object parameter);
 
@@ -209,7 +210,7 @@ public interface SqlSession extends Closeable {
    * Execute a delete statement. The number of rows affected will be returned.
    * 删除记录
    * @param statement Unique identifier matching the statement to execute.
-   * @return int The number of rows affected by the delete.
+   * @return int The number of rows affected by the delete. 返回的是受影响的行数
    */
   int delete(String statement);
 
@@ -218,7 +219,7 @@ public interface SqlSession extends Closeable {
    * 删除记录
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
-   * @return int The number of rows affected by the delete.
+   * @return int The number of rows affected by the delete. 返回的是受影响的行数
    */
   int delete(String statement, Object parameter);
 
