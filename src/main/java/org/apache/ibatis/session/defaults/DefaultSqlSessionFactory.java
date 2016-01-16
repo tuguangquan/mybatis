@@ -50,19 +50,21 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   //以下6个方法都会调用openSessionFromDataSource
   @Override
   public SqlSession openSession() {
+    //默认的executor类型是simpleExecutor
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, false);
   }
-
+  //autoCommit  true为不支持事务，false为支持事务
   @Override
   public SqlSession openSession(boolean autoCommit) {
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, autoCommit);
   }
-
+  //执行类型，有4种，BatchExecutor、ReuseExecutor、SimpleExecutor和CachingExecutor
   @Override
   public SqlSession openSession(ExecutorType execType) {
     return openSessionFromDataSource(execType, null, false);
   }
 
+  // TransactionIsolationLevel 事务隔离等级，有5种，详见下面说明
   @Override
   public SqlSession openSession(TransactionIsolationLevel level) {
     return openSessionFromDataSource(configuration.getDefaultExecutorType(), level, false);
@@ -98,12 +100,29 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     Transaction tx = null;
     try {
       final Environment environment = configuration.getEnvironment();
+      //事务工厂，通过xml配置文件中的transactionManager 元素配置的type来选择事务
+      //JDBC是直接全部使用JDBC的提交和回滚功能。它依靠使用链接的数据源来管理事务的作用域
+      //MANAGED这个类型什么都不做，它从不提交、回滚和关闭连接，而是让窗口来管理事务的全部生命周期
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-      //通过事务工厂来产生一个事务
+      //TransactionIsolationLevel事务的隔离级别有5个
+      //Connection.TRANSACTION_NONE表示不支持事务的常量
+      //Connection.TRANSACTION_READ_COMMITTED不可重复读和虚读可以发生
+      //Connection.TRANSACTION_READ_UNCOMMITTED表示可以发生脏读 (dirty read)、不可重复读和虚读 (phantom read) 的常量
+      //Connection.TRANSACTION_REPEATABLE_READ虚读可以发生
+      //Connection.TRANSACTION_SERIALIZABLE指示不可以发生脏读、不可重复读和虚读的常量
+      //脏读：如果一个事务对数据进行了更新，但事务还没有提交，另一个事务就可以“看到”该事务没有提交的更新结果。这样造成的问题是，
+      //如果第一个事务回滚，那么第二个事务在此之前所“看到”的数据就是一笔脏数据。
+      //不可重复读：指同个事务在整个事务过程中对同一笔数据进行读取，每次读取结果都不同。如果事务1在事务2的更新操作之前读取一次数据，
+      //在事务2的更新操作之后再读取同一笔数据一次，两次结果是不同的。所以TRANSACTION_READ_COMMITTED是无法避免不可重复读和虚读。 
+      //幻读：指同样一个查询在整个事务过程中多次执行后，查询所得的结果集是不一样的。幻读针对的是多笔记录。
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-      //生成一个执行器(事务包含在执行器里)
+      //execType是sql操作类型
+      //BatchExecutor用于执行批量sql操作
+      //ReuseExecutor会重用statement执行sql操作
+      //SimpleExecutor简单执行sql操作
+      //CachingExecutor 在查找数据库前先查找缓存，若没有找到的话调用delegate从数据库查询，并将查询结果存入缓存中。
       final Executor executor = configuration.newExecutor(tx, execType);
-      //然后产生一个DefaultSqlSession
+      //然后产生一个SqlSession
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       //如果打开事务出错，则关闭它
@@ -136,10 +155,13 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       ErrorContext.instance().reset();
     }
   }
-
+  //事务工厂，mybatis对于事务的管理有两种形式,
+  //(1)使用JDBC的事务管理机制,就是利用java.sql.Connection对象完成对事务的提交
+  //(2)使用MANAGED的事务管理机制，这种机制mybatis自身不会去实现事务管理，而是让程序的容器（JBOSS,WebLogic）来实现对事务的管理
   private TransactionFactory getTransactionFactoryFromEnvironment(Environment environment) {
     //如果没有配置事务工厂，则返回托管事务工厂
     if (environment == null || environment.getTransactionFactory() == null) {
+      //没有配置的话就使用manage形式
       return new ManagedTransactionFactory();
     }
     return environment.getTransactionFactory();
