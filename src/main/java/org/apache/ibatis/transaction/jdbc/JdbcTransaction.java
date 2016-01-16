@@ -45,9 +45,13 @@ public class JdbcTransaction implements Transaction {
 
   private static final Log log = LogFactory.getLog(JdbcTransaction.class);
 
+  /* 连接**/
   protected Connection connection;
+  /* 数据源**/
   protected DataSource dataSource;
+  /* 事务等级**/
   protected TransactionIsolationLevel level;
+  /* 是否提交事务， 默认为false**/
   protected boolean autoCommmit;
 
   public JdbcTransaction(DataSource ds, TransactionIsolationLevel desiredLevel, boolean desiredAutoCommit) {
@@ -101,7 +105,7 @@ public class JdbcTransaction implements Transaction {
 
   protected void setDesiredAutoCommit(boolean desiredAutoCommit) {
     try {
-		//和原来的比一下，再设置autocommit，是考虑多次重复设置的性能问题？
+       //和原来的比一下，再设置autocommit，是考虑多次重复设置的性能问题？
       if (connection.getAutoCommit() != desiredAutoCommit) {
         if (log.isDebugEnabled()) {
           log.debug("Setting autocommit to " + desiredAutoCommit + " on JDBC Connection [" + connection + "]");
@@ -116,13 +120,14 @@ public class JdbcTransaction implements Transaction {
           + "Requested setting: " + desiredAutoCommit + ".  Cause: " + e, e);
     }
   }
-
-	//见下面注释，貌似是说是对有些DB的一个workaround
+  //见下面注释，貌似是说是对有些DB的一个workaround
   protected void resetAutoCommit() {
     try {
       if (!connection.getAutoCommit()) {
         // MyBatis does not call commit/rollback on a connection if just selects were performed.
+        //select操作不会commit和rollback事务
         // Some databases start transactions with select statements
+        //一些数据库在select操作时会开启事务
         // and they mandate a commit/rollback before closing the connection.
         // A workaround is setting the autocommit to true before closing the connection.
         // Sybase throws an exception here.
