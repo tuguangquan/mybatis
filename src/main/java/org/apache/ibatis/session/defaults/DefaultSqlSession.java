@@ -45,9 +45,12 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class DefaultSqlSession implements SqlSession {
 
+  /* 配置文件生成的对象**/
   private Configuration configuration;
+  
+  /* 执行器类型**/
   private Executor executor;
-
+  /* 事务提交**/
   private boolean autoCommit;
   private boolean dirty;
   
@@ -126,6 +129,7 @@ public class DefaultSqlSession implements SqlSession {
       //根据statement id找到对应的MappedStatement
       MappedStatement ms = configuration.getMappedStatement(statement);
       //转而用执行器来查询结果,注意这里传入的ResultHandler是null
+      // wrapCollection(parameter) 如果参数类型是collection，list或者array都添加到StrictMap中作为一个参数
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
@@ -270,7 +274,7 @@ public class DefaultSqlSession implements SqlSession {
   public Configuration getConfiguration() {
     return configuration;
   }
-
+ //获得映射，绑定对象与sql语句
   @Override
   public <T> T getMapper(Class<T> type) {
     //最后会去调用MapperRegistry.getMapper

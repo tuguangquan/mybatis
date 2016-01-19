@@ -50,10 +50,10 @@ public class ReuseExecutor extends BaseExecutor {
   @Override
   public int doUpdate(MappedStatement ms, Object parameter) throws SQLException {
     Configuration configuration = ms.getConfiguration();
-    //和SimpleExecutor一样，新建一个StatementHandler
+    //和SimpleExecutor一样，新建一个StatementHandler,会包含插件
     //这里看到ResultHandler传入的是null
     StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);
-    //准备语句
+    //准备语句，转换成PrepareStatement
     Statement stmt = prepareStatement(handler, ms.getStatementLog());
     return handler.update(stmt);
   }
@@ -68,9 +68,11 @@ public class ReuseExecutor extends BaseExecutor {
 
   @Override
   public List<BatchResult> doFlushStatements(boolean isRollback) throws SQLException {
+    //关闭所有的Statement
     for (Statement stmt : statementMap.values()) {
       closeStatement(stmt);
     }
+    //清空map结构
     statementMap.clear();
     return Collections.emptyList();
   }
@@ -89,22 +91,24 @@ public class ReuseExecutor extends BaseExecutor {
       stmt = handler.prepare(connection);
       putStatement(sql, stmt);
     }
+    //用来处理是使用statement，PrepareStatement还是callableStatement
     handler.parameterize(stmt);
     return stmt;
   }
 
   private boolean hasStatementFor(String sql) {
+    //判断对应的sql语句是否存在statement或者连接是否被关闭
     try {
       return statementMap.keySet().contains(sql) && !statementMap.get(sql).getConnection().isClosed();
     } catch (SQLException e) {
       return false;
     }
   }
-
+  //从map结构中获得statement
   private Statement getStatement(String s) {
     return statementMap.get(s);
   }
-
+  //向map中插入sql及statement作为下次使用
   private void putStatement(String sql, Statement stmt) {
     statementMap.put(sql, stmt);
   }
