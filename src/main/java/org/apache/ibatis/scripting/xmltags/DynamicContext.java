@@ -60,7 +60,7 @@ public class DynamicContext {
   public DynamicContext(Configuration configuration, Object parameterObject) {
 	//绝大多数调用的地方parameterObject为null
     if (parameterObject != null && !(parameterObject instanceof Map)) {
-      //如果是map型
+      //如果是map型  ??  这句是 如果不是map型
       MetaObject metaObject = configuration.newMetaObject(parameterObject);
       bindings = new ContextMap(metaObject);
     } else {
