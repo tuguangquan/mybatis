@@ -23,7 +23,7 @@ package org.apache.ibatis.executor;
  * 错误上下文
  */
 public class ErrorContext {
-
+  // 获得 \n 不同的操作系统不一样
   private static final String LINE_SEPARATOR = System.getProperty("line.separator","\n");
   //每个线程给开一个错误上下文，防止多线程问题
   private static final ThreadLocal<ErrorContext> LOCAL = new ThreadLocal<ErrorContext>();
@@ -35,14 +35,16 @@ public class ErrorContext {
   private String message;
   private String sql;
   private Throwable cause;
-
+ 
+  //单例模式
   private ErrorContext() {
   }
 
   //工厂方法，得到一个实例
   public static ErrorContext instance() {
-      //因为是多线程，所以用了ThreadLocal
+      //因为是多线程，所以用了ThreadLocal  线程安全
     ErrorContext context = LOCAL.get();
+      //懒汉 单例模式
     if (context == null) {
       context = new ErrorContext();
       LOCAL.set(context);
