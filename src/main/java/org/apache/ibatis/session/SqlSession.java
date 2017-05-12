@@ -31,23 +31,24 @@ import org.apache.ibatis.executor.BatchResult;
 /**
  * 这是MyBatis主要的一个类，用来执行SQL，获取映射器，管理事务
  *
+ * 通常情况下，我们在应用程序中使用的Mybatis的API就是这个接口定义的方法。
+ *
  */
 public interface SqlSession extends Closeable {
 
-  //语句执行方法
-  //这些方法被用来执行SELECT，INSERT，UPDATE和DELETE语句。
   /**
    * Retrieve a single row mapped from the statement key
-   * 获取一条记录
-   * @param <T> the returned object type
-   * @param statement
-   * @return Mapped object
+   * 根据指定的SqlID获取一条记录的封装对象
+   * @param <T> the returned object type 封装之后的对象类型
+   * @param statement sqlID
+   * @return Mapped object 封装之后的对象
    */
   <T> T selectOne(String statement);
 
   /**
    * Retrieve a single row mapped from the statement key and parameter.
-   * 获取一条记录
+   * 根据指定的SqlID获取一条记录的封装对象，只不过这个方法容许我们可以给sql传递一些参数
+   * 一般在实际使用中，这个参数传递的是pojo，或者Map或者ImmutableMap
    * @param <T> the returned object type
    * @param statement Unique identifier matching the statement to use.
    * @param parameter A parameter object to pass to the statement.
@@ -57,7 +58,7 @@ public interface SqlSession extends Closeable {
 
   /**
    * Retrieve a list of mapped objects from the statement key and parameter.
-   * 获取多条记录
+   * 根据指定的sqlId获取多条记录
    * @param <E> the returned list element type
    * @param statement Unique identifier matching the statement to use.
    * @return List of mapped object
@@ -66,7 +67,7 @@ public interface SqlSession extends Closeable {
 
   /**
    * Retrieve a list of mapped objects from the statement key and parameter.
-   * 获取多条记录
+   * 获取多条记录，这个方法容许我们可以传递一些参数
    * @param <E> the returned list element type
    * @param statement Unique identifier matching the statement to use.
    * @param parameter A parameter object to pass to the statement.
@@ -77,7 +78,14 @@ public interface SqlSession extends Closeable {
   /**
    * Retrieve a list of mapped objects from the statement key and parameter,
    * within the specified row bounds.
-   * 获取多条记录,加上分页
+   * 获取多条记录，这个方法容许我们可以传递一些参数，不过这个方法容许我们进行
+   * 分页查询。
+   *
+   * 需要注意的是默认情况下，Mybatis为了扩展性，仅仅支持内存分页。也就是会先把
+   * 所有的数据查询出来以后，然后在内存中进行分页。因此在实际的情况中，需要注意
+   * 这一点。
+   *
+   * 一般情况下公司都会编写自己的Mybatis 物理分页插件
    * @param <E> the returned list element type
    * @param statement Unique identifier matching the statement to use.
    * @param parameter A parameter object to pass to the statement.
@@ -91,11 +99,11 @@ public interface SqlSession extends Closeable {
    * of results into a Map based on one of the properties in the resulting
    * objects.
    * Eg. Return a of Map[Integer,Author] for selectMap("selectAuthors","id")
-   * 获取多条记录,并存入Map
+   * 将查询到的结果列表转换为Map类型。
    * @param <K> the returned Map keys type
    * @param <V> the returned Map values type
    * @param statement Unique identifier matching the statement to use.
-   * @param mapKey The property to use as key for each value in the list.
+   * @param mapKey The property to use as key for each value in the list. 这个参数会作为结果map的key
    * @return Map containing key pair data.
    */
   <K, V> Map<K, V> selectMap(String statement, String mapKey);
@@ -104,7 +112,7 @@ public interface SqlSession extends Closeable {
    * The selectMap is a special case in that it is designed to convert a list
    * of results into a Map based on one of the properties in the resulting
    * objects.
-   * 获取多条记录,并存入Map
+   * 将查询到的结果列表转换为Map类型。这个方法容许我们传入需要的参数
    * @param <K> the returned Map keys type
    * @param <V> the returned Map values type
    * @param statement Unique identifier matching the statement to use.
@@ -132,7 +140,7 @@ public interface SqlSession extends Closeable {
   /**
    * Retrieve a single row mapped from the statement key and parameter
    * using a {@code ResultHandler}.
-   * 获取一条记录,并转交给ResultHandler处理
+   *
    * @param statement Unique identifier matching the statement to use.
    * @param parameter A parameter object to pass to the statement.
    * @param handler ResultHandler that will handle each retrieved row
@@ -143,7 +151,8 @@ public interface SqlSession extends Closeable {
   /**
    * Retrieve a single row mapped from the statement
    * using a {@code ResultHandler}.
-   * 获取一条记录,并转交给ResultHandler处理
+   * 获取一条记录,并转交给ResultHandler处理。这个方法容许我们自己定义对
+   * 查询到的行的处理方式。不过一般用的并不是很多
    * @param statement Unique identifier matching the statement to use.
    * @param handler ResultHandler that will handle each retrieved row
    * @return Mapped object
@@ -163,7 +172,7 @@ public interface SqlSession extends Closeable {
 
   /**
    * Execute an insert statement.
-   * 插入记录
+   * 插入记录。一般情况下这个语句在实际项目中用的并不是太多，而且更多使用带参数的insert函数
    * @param statement Unique identifier matching the statement to execute.
    * @return int The number of rows affected by the insert.
    */
@@ -173,16 +182,16 @@ public interface SqlSession extends Closeable {
    * Execute an insert statement with the given parameter object. Any generated
    * autoincrement values or selectKey entries will modify the given parameter
    * object properties. Only the number of rows affected will be returned.
-   * 插入记录
+   * 插入记录，容许传入参数。
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
-   * @return int The number of rows affected by the insert.
+   * @return int The number of rows affected by the insert. 注意返回的是受影响的行数
    */
   int insert(String statement, Object parameter);
 
   /**
    * Execute an update statement. The number of rows affected will be returned.
-   * 更新记录
+   * 更新记录。返回的是受影响的行数
    * @param statement Unique identifier matching the statement to execute.
    * @return int The number of rows affected by the update.
    */
@@ -193,7 +202,7 @@ public interface SqlSession extends Closeable {
    * 更新记录
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
-   * @return int The number of rows affected by the update.
+   * @return int The number of rows affected by the update. 返回的是受影响的行数
    */
   int update(String statement, Object parameter);
 
@@ -201,7 +210,7 @@ public interface SqlSession extends Closeable {
    * Execute a delete statement. The number of rows affected will be returned.
    * 删除记录
    * @param statement Unique identifier matching the statement to execute.
-   * @return int The number of rows affected by the delete.
+   * @return int The number of rows affected by the delete. 返回的是受影响的行数
    */
   int delete(String statement);
 
@@ -210,7 +219,7 @@ public interface SqlSession extends Closeable {
    * 删除记录
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
-   * @return int The number of rows affected by the delete.
+   * @return int The number of rows affected by the delete. 返回的是受影响的行数
    */
   int delete(String statement, Object parameter);
 
