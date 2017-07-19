@@ -10,6 +10,8 @@ org.apache.ibatis.logging.log4j2
 org.apache.ibatis.logging.nologging
 org.apache.ibatis.logging.slf4j
 org.apache.ibatis.logging.stdout
+对象适配器设计模式
+设计模式可参考http://www.cnblogs.com/liuling/archive/2013/04/12/adapter.html
 
 2.异常
 org.apache.ibatis.exceptions
