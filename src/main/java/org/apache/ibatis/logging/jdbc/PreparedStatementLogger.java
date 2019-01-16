@@ -27,88 +27,87 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
  * PreparedStatement proxy to add logging
- * 
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
- * 
  */
 public final class PreparedStatementLogger extends BaseJdbcLogger implements InvocationHandler {
 
-  private PreparedStatement statement;
+    private PreparedStatement statement;
 
-  private PreparedStatementLogger(PreparedStatement stmt, Log statementLog, int queryStack) {
-    super(statementLog, queryStack);
-    this.statement = stmt;
-  }
-
-  public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
-    try {
-      if (Object.class.equals(method.getDeclaringClass())) {
-        return method.invoke(this, params);
-      }          
-      if (EXECUTE_METHODS.contains(method.getName())) {
-        if (isDebugEnabled()) {
-          debug("Parameters: " + getParameterValueString(), true);
-        }
-        clearColumnInfo();
-        if ("executeQuery".equals(method.getName())) {
-          ResultSet rs = (ResultSet) method.invoke(statement, params);
-          if (rs != null) {
-            return ResultSetLogger.newInstance(rs, statementLog, queryStack);
-          } else {
-            return null;
-          }
-        } else {
-          return method.invoke(statement, params);
-        }
-      } else if (SET_METHODS.contains(method.getName())) {
-        if ("setNull".equals(method.getName())) {
-          setColumn(params[0], null);
-        } else {
-          setColumn(params[0], params[1]);
-        }
-        return method.invoke(statement, params);
-      } else if ("getResultSet".equals(method.getName())) {
-        ResultSet rs = (ResultSet) method.invoke(statement, params);
-        if (rs != null) {
-          return ResultSetLogger.newInstance(rs, statementLog, queryStack);
-        } else {
-          return null;
-        }
-      } else if ("getUpdateCount".equals(method.getName())) {
-        int updateCount = (Integer) method.invoke(statement, params);
-        if (updateCount != -1) {
-          debug("   Updates: " + updateCount, false);
-        }
-        return updateCount;
-      } else {
-        return method.invoke(statement, params);
-      }
-    } catch (Throwable t) {
-      throw ExceptionUtil.unwrapThrowable(t);
+    private PreparedStatementLogger(PreparedStatement stmt, Log statementLog, int queryStack) {
+        super(statementLog, queryStack);
+        this.statement = stmt;
     }
-  }
 
-  /*
-   * Creates a logging version of a PreparedStatement
-   *
-   * @param stmt - the statement
-   * @param sql  - the sql statement
-   * @return - the proxy
-   */
-  public static PreparedStatement newInstance(PreparedStatement stmt, Log statementLog, int queryStack) {
-    InvocationHandler handler = new PreparedStatementLogger(stmt, statementLog, queryStack);
-    ClassLoader cl = PreparedStatement.class.getClassLoader();
-    return (PreparedStatement) Proxy.newProxyInstance(cl, new Class[]{PreparedStatement.class, CallableStatement.class}, handler);
-  }
+    public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
+        try {
+            if (Object.class.equals(method.getDeclaringClass())) {
+                return method.invoke(this, params);
+            }
+            if (EXECUTE_METHODS.contains(method.getName())) {
+                if (isDebugEnabled()) {
+                    debug("Parameters: " + getParameterValueString(), true);
+                }
+                clearColumnInfo();
+                if ("executeQuery".equals(method.getName())) {
+                    ResultSet rs = (ResultSet) method.invoke(statement, params);
+                    if (rs != null) {
+                        return ResultSetLogger.newInstance(rs, statementLog, queryStack);
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return method.invoke(statement, params);
+                }
+            } else if (SET_METHODS.contains(method.getName())) {
+                if ("setNull".equals(method.getName())) {
+                    setColumn(params[0], null);
+                } else {
+                    setColumn(params[0], params[1]);
+                }
+                return method.invoke(statement, params);
+            } else if ("getResultSet".equals(method.getName())) {
+                ResultSet rs = (ResultSet) method.invoke(statement, params);
+                if (rs != null) {
+                    return ResultSetLogger.newInstance(rs, statementLog, queryStack);
+                } else {
+                    return null;
+                }
+            } else if ("getUpdateCount".equals(method.getName())) {
+                int updateCount = (Integer) method.invoke(statement, params);
+                if (updateCount != -1) {
+                    debug("   Updates: " + updateCount, false);
+                }
+                return updateCount;
+            } else {
+                return method.invoke(statement, params);
+            }
+        } catch (Throwable t) {
+            throw ExceptionUtil.unwrapThrowable(t);
+        }
+    }
 
-  /*
-   * Return the wrapped prepared statement
-   *
-   * @return the PreparedStatement
-   */
-  public PreparedStatement getPreparedStatement() {
-    return statement;
-  }
+    /*
+     * Creates a logging version of a PreparedStatement
+     *
+     * @param stmt - the statement
+     * @param sql  - the sql statement
+     * @return - the proxy
+     */
+    public static PreparedStatement newInstance(PreparedStatement stmt, Log statementLog, int queryStack) {
+        InvocationHandler handler = new PreparedStatementLogger(stmt, statementLog, queryStack);
+        ClassLoader cl = PreparedStatement.class.getClassLoader();
+        return (PreparedStatement) Proxy.newProxyInstance(cl, new Class[]{PreparedStatement.class, CallableStatement.class}, handler);
+    }
+
+    /*
+     * Return the wrapped prepared statement
+     *
+     * @return the PreparedStatement
+     */
+    public PreparedStatement getPreparedStatement() {
+        return statement;
+    }
 
 }

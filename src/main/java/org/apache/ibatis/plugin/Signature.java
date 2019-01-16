@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Signature {
-  Class<?> type();
+    Class<?> type();
 
-  String method();
+    String method();
 
-  Class<?>[] args();
+    Class<?>[] args();
 }

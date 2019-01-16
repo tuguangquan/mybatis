@@ -19,15 +19,15 @@ package org.apache.ibatis.scripting.xmltags;
  * @author Clinton Begin
  */
 public class StaticTextSqlNode implements SqlNode {
-  private String text;
+    private String text;
 
-  public StaticTextSqlNode(String text) {
-    this.text = text;
-  }
+    public StaticTextSqlNode(String text) {
+        this.text = text;
+    }
 
-  public boolean apply(DynamicContext context) {
-    context.appendSql(text);
-    return true;
-  }
+    public boolean apply(DynamicContext context) {
+        context.appendSql(text);
+        return true;
+    }
 
 }

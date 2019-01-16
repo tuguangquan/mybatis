@@ -25,41 +25,41 @@ import org.apache.logging.log4j.MarkerManager;
  * @author Eduardo Macarron
  */
 public class Log4j2LoggerImpl implements Log {
-  
-  private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
 
-  private Logger log;
+    private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
 
-  public Log4j2LoggerImpl(Logger logger) {
-    log = logger;
-  }
+    private Logger log;
 
-  public boolean isDebugEnabled() {
-    return log.isDebugEnabled();
-  }
+    public Log4j2LoggerImpl(Logger logger) {
+        log = logger;
+    }
 
-  public boolean isTraceEnabled() {
-    return log.isTraceEnabled();
-  }
+    public boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
 
-  public void error(String s, Throwable e) {
-    log.error(MARKER, s, e);
-  }
+    public boolean isTraceEnabled() {
+        return log.isTraceEnabled();
+    }
 
-  public void error(String s) {
-    log.error(MARKER, s);
-  }
+    public void error(String s, Throwable e) {
+        log.error(MARKER, s, e);
+    }
 
-  public void debug(String s) {
-    log.debug(MARKER, s);
-  }
+    public void error(String s) {
+        log.error(MARKER, s);
+    }
 
-  public void trace(String s) {
-    log.trace(MARKER, s);
-  }
+    public void debug(String s) {
+        log.debug(MARKER, s);
+    }
 
-  public void warn(String s) {
-    log.warn(MARKER, s);
-  }
+    public void trace(String s) {
+        log.trace(MARKER, s);
+    }
+
+    public void warn(String s) {
+        log.warn(MARKER, s);
+    }
 
 }

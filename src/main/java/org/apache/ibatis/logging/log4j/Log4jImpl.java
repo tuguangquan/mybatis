@@ -23,41 +23,41 @@ import org.apache.log4j.Logger;
  * @author Eduardo Macarron
  */
 public class Log4jImpl implements Log {
-  
-  private static final String FQCN = Log4jImpl.class.getName();
 
-  private Logger log;
+    private static final String FQCN = Log4jImpl.class.getName();
 
-  public Log4jImpl(String clazz) {
-    log = Logger.getLogger(clazz);
-  }
+    private Logger log;
 
-  public boolean isDebugEnabled() {
-    return log.isDebugEnabled();
-  }
+    public Log4jImpl(String clazz) {
+        log = Logger.getLogger(clazz);
+    }
 
-  public boolean isTraceEnabled() {
-    return log.isTraceEnabled();
-  }
+    public boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
 
-  public void error(String s, Throwable e) {
-    log.log(FQCN, Level.ERROR, s, e);
-  }
+    public boolean isTraceEnabled() {
+        return log.isTraceEnabled();
+    }
 
-  public void error(String s) {
-    log.log(FQCN, Level.ERROR, s, null);
-  }
+    public void error(String s, Throwable e) {
+        log.log(FQCN, Level.ERROR, s, e);
+    }
 
-  public void debug(String s) {
-    log.log(FQCN, Level.DEBUG, s, null);
-  }
+    public void error(String s) {
+        log.log(FQCN, Level.ERROR, s, null);
+    }
 
-  public void trace(String s) {
-    log.log(FQCN, Level.TRACE, s, null);
-  }
+    public void debug(String s) {
+        log.log(FQCN, Level.DEBUG, s, null);
+    }
 
-  public void warn(String s) {
-    log.log(FQCN, Level.WARN, s, null);
-  }
+    public void trace(String s) {
+        log.log(FQCN, Level.TRACE, s, null);
+    }
+
+    public void warn(String s) {
+        log.log(FQCN, Level.WARN, s, null);
+    }
 
 }

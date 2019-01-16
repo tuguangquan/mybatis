@@ -28,29 +28,29 @@ import org.apache.ibatis.session.ResultHandler;
  */
 public class DefaultMapResultHandler<K, V> implements ResultHandler {
 
-  private final Map<K, V> mappedResults;
-  private final String mapKey;
-  private final ObjectFactory objectFactory;
-  private final ObjectWrapperFactory objectWrapperFactory;
+    private final Map<K, V> mappedResults;
+    private final String mapKey;
+    private final ObjectFactory objectFactory;
+    private final ObjectWrapperFactory objectWrapperFactory;
 
-  @SuppressWarnings("unchecked")
-  public DefaultMapResultHandler(String mapKey, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory) {
-    this.objectFactory = objectFactory;
-    this.objectWrapperFactory = objectWrapperFactory;
-    this.mappedResults = objectFactory.create(Map.class);
-    this.mapKey = mapKey;
-  }
+    @SuppressWarnings("unchecked")
+    public DefaultMapResultHandler(String mapKey, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory) {
+        this.objectFactory = objectFactory;
+        this.objectWrapperFactory = objectWrapperFactory;
+        this.mappedResults = objectFactory.create(Map.class);
+        this.mapKey = mapKey;
+    }
 
-  public void handleResult(ResultContext context) {
-    // TODO is that assignment always true?
-    final V value = (V) context.getResultObject();
-    final MetaObject mo = MetaObject.forObject(value, objectFactory, objectWrapperFactory);
-    // TODO is that assignment always true?
-    final K key = (K) mo.getValue(mapKey);
-    mappedResults.put(key, value);
-  }
+    public void handleResult(ResultContext context) {
+        // TODO is that assignment always true?
+        final V value = (V) context.getResultObject();
+        final MetaObject mo = MetaObject.forObject(value, objectFactory, objectWrapperFactory);
+        // TODO is that assignment always true?
+        final K key = (K) mo.getValue(mapKey);
+        mappedResults.put(key, value);
+    }
 
-  public Map<K, V> getMappedResults() {
-    return mappedResults;
-  }
+    public Map<K, V> getMappedResults() {
+        return mappedResults;
+    }
 }

@@ -33,51 +33,51 @@ import org.apache.ibatis.session.RowBounds;
  */
 public class RoutingStatementHandler implements StatementHandler {
 
-  private final StatementHandler delegate;
+    private final StatementHandler delegate;
 
-  public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 
-    switch (ms.getStatementType()) {
-      case STATEMENT:
-        delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
-        break;
-      case PREPARED:
-        delegate = new PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
-        break;
-      case CALLABLE:
-        delegate = new CallableStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
-        break;
-      default:
-        throw new ExecutorException("Unknown statement type: " + ms.getStatementType());
+        switch (ms.getStatementType()) {
+            case STATEMENT:
+                delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                break;
+            case PREPARED:
+                delegate = new PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                break;
+            case CALLABLE:
+                delegate = new CallableStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                break;
+            default:
+                throw new ExecutorException("Unknown statement type: " + ms.getStatementType());
+        }
+
     }
 
-  }
+    public Statement prepare(Connection connection) throws SQLException {
+        return delegate.prepare(connection);
+    }
 
-  public Statement prepare(Connection connection) throws SQLException {
-    return delegate.prepare(connection);
-  }
+    public void parameterize(Statement statement) throws SQLException {
+        delegate.parameterize(statement);
+    }
 
-  public void parameterize(Statement statement) throws SQLException {
-    delegate.parameterize(statement);
-  }
+    public void batch(Statement statement) throws SQLException {
+        delegate.batch(statement);
+    }
 
-  public void batch(Statement statement) throws SQLException {
-    delegate.batch(statement);
-  }
+    public int update(Statement statement) throws SQLException {
+        return delegate.update(statement);
+    }
 
-  public int update(Statement statement) throws SQLException {
-    return delegate.update(statement);
-  }
+    public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
+        return delegate.<E>query(statement, resultHandler);
+    }
 
-  public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-    return delegate.<E>query(statement, resultHandler);
-  }
+    public BoundSql getBoundSql() {
+        return delegate.getBoundSql();
+    }
 
-  public BoundSql getBoundSql() {
-    return delegate.getBoundSql();
-  }
-
-  public ParameterHandler getParameterHandler() {
-    return delegate.getParameterHandler();
-  }
+    public ParameterHandler getParameterHandler() {
+        return delegate.getParameterHandler();
+    }
 }

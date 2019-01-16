@@ -27,23 +27,23 @@ import org.apache.ibatis.session.ResultHandler;
  */
 public class DefaultResultHandler implements ResultHandler {
 
-  private final List<Object> list;
+    private final List<Object> list;
 
-  public DefaultResultHandler() {
-    list = new ArrayList<Object>();
-  }
+    public DefaultResultHandler() {
+        list = new ArrayList<Object>();
+    }
 
-  @SuppressWarnings("unchecked")
-  public DefaultResultHandler(ObjectFactory objectFactory) {
-    list = objectFactory.create(List.class);
-  }
+    @SuppressWarnings("unchecked")
+    public DefaultResultHandler(ObjectFactory objectFactory) {
+        list = objectFactory.create(List.class);
+    }
 
-  public void handleResult(ResultContext context) {
-    list.add(context.getResultObject());
-  }
+    public void handleResult(ResultContext context) {
+        list.add(context.getResultObject());
+    }
 
-  public List<Object> getResultList() {
-    return list;
-  }
+    public List<Object> getResultList() {
+        return list;
+    }
 
 }

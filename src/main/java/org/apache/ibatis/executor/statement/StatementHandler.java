@@ -29,23 +29,23 @@ import org.apache.ibatis.session.ResultHandler;
  */
 public interface StatementHandler {
 
-  Statement prepare(Connection connection)
-      throws SQLException;
+    Statement prepare(Connection connection)
+            throws SQLException;
 
-  void parameterize(Statement statement)
-      throws SQLException;
+    void parameterize(Statement statement)
+            throws SQLException;
 
-  void batch(Statement statement)
-      throws SQLException;
+    void batch(Statement statement)
+            throws SQLException;
 
-  int update(Statement statement)
-      throws SQLException;
+    int update(Statement statement)
+            throws SQLException;
 
-  <E> List<E> query(Statement statement, ResultHandler resultHandler)
-      throws SQLException;
+    <E> List<E> query(Statement statement, ResultHandler resultHandler)
+            throws SQLException;
 
-  BoundSql getBoundSql();
+    BoundSql getBoundSql();
 
-  ParameterHandler getParameterHandler();
+    ParameterHandler getParameterHandler();
 
 }

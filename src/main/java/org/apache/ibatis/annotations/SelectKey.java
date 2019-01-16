@@ -28,15 +28,15 @@ import org.apache.ibatis.mapping.StatementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface SelectKey {
-  String[] statement();
+    String[] statement();
 
-  String keyProperty();
+    String keyProperty();
 
-  String keyColumn() default "";
+    String keyColumn() default "";
 
-  boolean before();
+    boolean before();
 
-  Class<?> resultType();
+    Class<?> resultType();
 
-  StatementType statementType() default StatementType.PREPARED;
+    StatementType statementType() default StatementType.PREPARED;
 }

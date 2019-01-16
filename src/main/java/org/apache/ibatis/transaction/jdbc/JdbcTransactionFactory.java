@@ -29,19 +29,20 @@ import org.apache.ibatis.transaction.TransactionFactory;
  *
  * @see JdbcTransaction
  */
+
 /**
  * @author Clinton Begin
  */
 public class JdbcTransactionFactory implements TransactionFactory {
 
-  public void setProperties(Properties props) {
-  }
+    public void setProperties(Properties props) {
+    }
 
-  public Transaction newTransaction(Connection conn) {
-    return new JdbcTransaction(conn);
-  }
+    public Transaction newTransaction(Connection conn) {
+        return new JdbcTransaction(conn);
+    }
 
-  public Transaction newTransaction(DataSource ds, TransactionIsolationLevel level, boolean autoCommit) {
-    return new JdbcTransaction(ds, level, autoCommit);
-  }
+    public Transaction newTransaction(DataSource ds, TransactionIsolationLevel level, boolean autoCommit) {
+        return new JdbcTransaction(ds, level, autoCommit);
+    }
 }

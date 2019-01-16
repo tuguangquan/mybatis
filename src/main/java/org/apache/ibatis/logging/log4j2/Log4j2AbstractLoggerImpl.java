@@ -28,43 +28,43 @@ import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
  * @author Eduardo Macarron
  */
 public class Log4j2AbstractLoggerImpl implements Log {
-  
-  private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
-  
-  private static final String FQCN = Log4j2Impl.class.getName();
-  
-  private AbstractLoggerWrapper log;
 
-  public Log4j2AbstractLoggerImpl(AbstractLogger abstractLogger) {
-    log = new AbstractLoggerWrapper(abstractLogger, abstractLogger.getName(), abstractLogger.getMessageFactory());
-  }
+    private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
 
-  public boolean isDebugEnabled() {
-    return log.isDebugEnabled();
-  }
+    private static final String FQCN = Log4j2Impl.class.getName();
 
-  public boolean isTraceEnabled() {
-    return log.isTraceEnabled();
-  }
+    private AbstractLoggerWrapper log;
 
-  public void error(String s, Throwable e) {
-    log.log(MARKER, FQCN, Level.ERROR, new SimpleMessage(s), e);
-  }
+    public Log4j2AbstractLoggerImpl(AbstractLogger abstractLogger) {
+        log = new AbstractLoggerWrapper(abstractLogger, abstractLogger.getName(), abstractLogger.getMessageFactory());
+    }
 
-  public void error(String s) {
-    log.log(MARKER, FQCN, Level.ERROR, new SimpleMessage(s), null);
-  }
+    public boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
 
-  public void debug(String s) {
-    log.log(MARKER, FQCN, Level.DEBUG, new SimpleMessage(s), null);
-  }
+    public boolean isTraceEnabled() {
+        return log.isTraceEnabled();
+    }
 
-  public void trace(String s) {
-    log.log(MARKER, FQCN, Level.TRACE, new SimpleMessage(s), null);
-  }
+    public void error(String s, Throwable e) {
+        log.log(MARKER, FQCN, Level.ERROR, new SimpleMessage(s), e);
+    }
 
-  public void warn(String s) {
-    log.log(MARKER, FQCN, Level.WARN, new SimpleMessage(s), null);
-  }
+    public void error(String s) {
+        log.log(MARKER, FQCN, Level.ERROR, new SimpleMessage(s), null);
+    }
+
+    public void debug(String s) {
+        log.log(MARKER, FQCN, Level.DEBUG, new SimpleMessage(s), null);
+    }
+
+    public void trace(String s) {
+        log.log(MARKER, FQCN, Level.TRACE, new SimpleMessage(s), null);
+    }
+
+    public void warn(String s) {
+        log.log(MARKER, FQCN, Level.WARN, new SimpleMessage(s), null);
+    }
 
 }

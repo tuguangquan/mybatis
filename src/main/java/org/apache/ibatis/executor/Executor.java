@@ -31,34 +31,34 @@ import org.apache.ibatis.transaction.Transaction;
  */
 public interface Executor {
 
-  ResultHandler NO_RESULT_HANDLER = null;
+    ResultHandler NO_RESULT_HANDLER = null;
 
-  int update(MappedStatement ms, Object parameter) throws SQLException;
+    int update(MappedStatement ms, Object parameter) throws SQLException;
 
-  <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException;
+    <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException;
 
-  <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException;
+    <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException;
 
-  List<BatchResult> flushStatements() throws SQLException;
+    List<BatchResult> flushStatements() throws SQLException;
 
-  void commit(boolean required) throws SQLException;
+    void commit(boolean required) throws SQLException;
 
-  void rollback(boolean required) throws SQLException;
+    void rollback(boolean required) throws SQLException;
 
-  CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql);
+    CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql);
 
-  boolean isCached(MappedStatement ms, CacheKey key);
+    boolean isCached(MappedStatement ms, CacheKey key);
 
-  void clearLocalCache();
+    void clearLocalCache();
 
-  void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType);
+    void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType);
 
-  Transaction getTransaction();
+    Transaction getTransaction();
 
-  void close(boolean forceRollback);
+    void close(boolean forceRollback);
 
-  boolean isClosed();
-  
-  void setExecutorWrapper(Executor executor);
+    boolean isClosed();
+
+    void setExecutorWrapper(Executor executor);
 
 }

@@ -22,10 +22,10 @@ import java.util.Properties;
  */
 public interface Interceptor {
 
-  Object intercept(Invocation invocation) throws Throwable;
+    Object intercept(Invocation invocation) throws Throwable;
 
-  Object plugin(Object target);
+    Object plugin(Object target);
 
-  void setProperties(Properties properties);
+    void setProperties(Properties properties);
 
 }

@@ -25,8 +25,8 @@ import java.util.List;
  */
 public interface ResultSetHandler {
 
-  <E> List<E> handleResultSets(Statement stmt) throws SQLException;
+    <E> List<E> handleResultSets(Statement stmt) throws SQLException;
 
-  void handleOutputParameters(CallableStatement cs) throws SQLException;
+    void handleOutputParameters(CallableStatement cs) throws SQLException;
 
 }

@@ -26,71 +26,71 @@ import org.apache.ibatis.logging.LogFactory;
  */
 public class LoggingCache implements Cache {
 
-  private Log log;  
-  private Cache delegate;
-  protected int requests = 0;
-  protected int hits = 0;
+    private Log log;
+    private Cache delegate;
+    protected int requests = 0;
+    protected int hits = 0;
 
-  public LoggingCache(Cache delegate) {
-    this.delegate = delegate;
-    this.log = LogFactory.getLog(getId());
-  }
-
-  @Override
-  public String getId() {
-    return delegate.getId();
-  }
-
-  @Override
-  public int getSize() {
-    return delegate.getSize();
-  }
-
-  @Override
-  public void putObject(Object key, Object object) {
-    delegate.putObject(key, object);
-  }
-
-  @Override
-  public Object getObject(Object key) {
-    requests++;
-    final Object value = delegate.getObject(key);
-    if (value != null) {
-      hits++;
+    public LoggingCache(Cache delegate) {
+        this.delegate = delegate;
+        this.log = LogFactory.getLog(getId());
     }
-    if (log.isDebugEnabled()) {
-      log.debug("Cache Hit Ratio [" + getId() + "]: " + getHitRatio());
+
+    @Override
+    public String getId() {
+        return delegate.getId();
     }
-    return value;
-  }
 
-  @Override
-  public Object removeObject(Object key) {
-    return delegate.removeObject(key);
-  }
+    @Override
+    public int getSize() {
+        return delegate.getSize();
+    }
 
-  @Override
-  public void clear() {
-    delegate.clear();
-  }
+    @Override
+    public void putObject(Object key, Object object) {
+        delegate.putObject(key, object);
+    }
 
-  @Override
-  public ReadWriteLock getReadWriteLock() {
-    return null;
-  }
+    @Override
+    public Object getObject(Object key) {
+        requests++;
+        final Object value = delegate.getObject(key);
+        if (value != null) {
+            hits++;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Cache Hit Ratio [" + getId() + "]: " + getHitRatio());
+        }
+        return value;
+    }
 
-  @Override
-  public int hashCode() {
-    return delegate.hashCode();
-  }
+    @Override
+    public Object removeObject(Object key) {
+        return delegate.removeObject(key);
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    return delegate.equals(obj);
-  }
+    @Override
+    public void clear() {
+        delegate.clear();
+    }
 
-  private double getHitRatio() {
-    return (double) hits / (double) requests;
-  }
+    @Override
+    public ReadWriteLock getReadWriteLock() {
+        return null;
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return delegate.equals(obj);
+    }
+
+    private double getHitRatio() {
+        return (double) hits / (double) requests;
+    }
 
 }

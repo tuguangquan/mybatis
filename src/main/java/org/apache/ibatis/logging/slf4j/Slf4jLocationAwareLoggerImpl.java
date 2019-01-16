@@ -25,43 +25,43 @@ import org.slf4j.spi.LocationAwareLogger;
  * @author Eduardo Macarron
  */
 class Slf4jLocationAwareLoggerImpl implements Log {
-  
-  private static Marker MARKER = MarkerFactory.getMarker(LogFactory.MARKER);
 
-  private static final String FQCN = Slf4jImpl.class.getName();
+    private static Marker MARKER = MarkerFactory.getMarker(LogFactory.MARKER);
 
-  private LocationAwareLogger logger;
+    private static final String FQCN = Slf4jImpl.class.getName();
 
-  Slf4jLocationAwareLoggerImpl(LocationAwareLogger logger) {
-    this.logger = logger;
-  }
+    private LocationAwareLogger logger;
 
-  public boolean isDebugEnabled() {
-    return logger.isDebugEnabled();
-  }
+    Slf4jLocationAwareLoggerImpl(LocationAwareLogger logger) {
+        this.logger = logger;
+    }
 
-  public boolean isTraceEnabled() {
-    return logger.isTraceEnabled();
-  }
+    public boolean isDebugEnabled() {
+        return logger.isDebugEnabled();
+    }
 
-  public void error(String s, Throwable e) {
-    logger.log(MARKER, FQCN, LocationAwareLogger.ERROR_INT, s, null, e);
-  }
+    public boolean isTraceEnabled() {
+        return logger.isTraceEnabled();
+    }
 
-  public void error(String s) {
-    logger.log(MARKER, FQCN, LocationAwareLogger.ERROR_INT, s, null, null);
-  }
+    public void error(String s, Throwable e) {
+        logger.log(MARKER, FQCN, LocationAwareLogger.ERROR_INT, s, null, e);
+    }
 
-  public void debug(String s) {
-    logger.log(MARKER, FQCN, LocationAwareLogger.DEBUG_INT, s, null, null);
-  }
+    public void error(String s) {
+        logger.log(MARKER, FQCN, LocationAwareLogger.ERROR_INT, s, null, null);
+    }
 
-  public void trace(String s) {
-    logger.log(MARKER, FQCN, LocationAwareLogger.TRACE_INT, s, null, null);
-  }
+    public void debug(String s) {
+        logger.log(MARKER, FQCN, LocationAwareLogger.DEBUG_INT, s, null, null);
+    }
 
-  public void warn(String s) {
-    logger.log(MARKER, FQCN, LocationAwareLogger.WARN_INT, s, null, null);
-  }
+    public void trace(String s) {
+        logger.log(MARKER, FQCN, LocationAwareLogger.TRACE_INT, s, null, null);
+    }
+
+    public void warn(String s) {
+        logger.log(MARKER, FQCN, LocationAwareLogger.WARN_INT, s, null, null);
+    }
 
 }

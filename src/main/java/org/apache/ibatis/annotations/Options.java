@@ -29,21 +29,21 @@ import org.apache.ibatis.mapping.StatementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Options {
-  boolean useCache() default true;
+    boolean useCache() default true;
 
-  boolean flushCache() default false;
+    boolean flushCache() default false;
 
-  ResultSetType resultSetType() default ResultSetType.FORWARD_ONLY;
+    ResultSetType resultSetType() default ResultSetType.FORWARD_ONLY;
 
-  StatementType statementType() default StatementType.PREPARED;
+    StatementType statementType() default StatementType.PREPARED;
 
-  int fetchSize() default -1;
+    int fetchSize() default -1;
 
-  int timeout() default -1;
+    int timeout() default -1;
 
-  boolean useGeneratedKeys() default false;
+    boolean useGeneratedKeys() default false;
 
-  String keyProperty() default "id";
+    String keyProperty() default "id";
 
-  String keyColumn() default "";
+    String keyColumn() default "";
 }

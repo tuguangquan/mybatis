@@ -22,6 +22,6 @@ import java.io.ObjectStreamException;
  */
 public interface WriteReplaceInterface {
 
-  Object writeReplace() throws ObjectStreamException;
+    Object writeReplace() throws ObjectStreamException;
 
 }

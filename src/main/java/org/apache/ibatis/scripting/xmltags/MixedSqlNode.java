@@ -21,16 +21,16 @@ import java.util.List;
  * @author Clinton Begin
  */
 public class MixedSqlNode implements SqlNode {
-  private List<SqlNode> contents;
+    private List<SqlNode> contents;
 
-  public MixedSqlNode(List<SqlNode> contents) {
-    this.contents = contents;
-  }
-
-  public boolean apply(DynamicContext context) {
-    for (SqlNode sqlNode : contents) {
-      sqlNode.apply(context);
+    public MixedSqlNode(List<SqlNode> contents) {
+        this.contents = contents;
     }
-    return true;
-  }
+
+    public boolean apply(DynamicContext context) {
+        for (SqlNode sqlNode : contents) {
+            sqlNode.apply(context);
+        }
+        return true;
+    }
 }

@@ -23,8 +23,8 @@ import javax.sql.DataSource;
  */
 public interface DataSourceFactory {
 
-  void setProperties(Properties props);
+    void setProperties(Properties props);
 
-  DataSource getDataSource();
+    DataSource getDataSource();
 
 }
