@@ -40,6 +40,7 @@ public class MapperRegistry {
         this.config = config;
     }
 
+    //SqlSession是作为被代理的对象。type作为key去Map中拿MapperProxyFactory来产生代理类需要的参数。
     @SuppressWarnings("unchecked")
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
