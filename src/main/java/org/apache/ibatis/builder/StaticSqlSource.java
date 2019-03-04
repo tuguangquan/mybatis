@@ -15,14 +15,14 @@
  */
 package org.apache.ibatis.builder;
 
-import java.util.List;
-
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.session.Configuration;
 
-/**
+import java.util.List;
+
+/** 转换为该对象：静态sqlSource，对象包含?的sql和对应的参数映射列表，及配置，基本上sql解析完了
  * @author Clinton Begin
  */
 public class StaticSqlSource implements SqlSource {

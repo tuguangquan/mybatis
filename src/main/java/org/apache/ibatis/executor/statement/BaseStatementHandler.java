@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.executor.statement;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
@@ -32,6 +28,10 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Clinton Begin
@@ -61,7 +61,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
         if (boundSql == null) { // issue #435, get the key before calculating the statement
             generateKeys(parameterObject);
-            boundSql = mappedStatement.getBoundSql(parameterObject);
+            boundSql = mappedStatement.getBoundSql(parameterObject);//在此处算出最终sql，动态sql
         }
 
         this.boundSql = boundSql;

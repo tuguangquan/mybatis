@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.mapping;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
@@ -27,6 +23,10 @@ import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Clinton Begin
@@ -68,7 +68,7 @@ public final class MappedStatement {
             mappedStatement.configuration = configuration;
             mappedStatement.id = id;
             mappedStatement.sqlSource = sqlSource;
-            mappedStatement.statementType = StatementType.PREPARED;
+            mappedStatement.statementType = StatementType.PREPARED;//指定类型为PREPARED
             mappedStatement.parameterMap = new ParameterMap.Builder(configuration, "defaultParameterMap", null, new ArrayList<ParameterMapping>()).build();
             mappedStatement.resultMaps = new ArrayList<ResultMap>();
             mappedStatement.timeout = configuration.getDefaultStatementTimeout();
@@ -275,15 +275,15 @@ public final class MappedStatement {
     }
 
     public BoundSql getBoundSql(Object parameterObject) {
-        BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
-        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+        BoundSql boundSql = sqlSource.getBoundSql(parameterObject);//得到sql（带?）
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();//得到参数
         if (parameterMappings == null || parameterMappings.size() <= 0) {
             boundSql = new BoundSql(configuration, boundSql.getSql(), parameterMap.getParameterMappings(), parameterObject);
         }
 
         // check for nested result maps in parameter mappings (issue #30)
         for (ParameterMapping pm : boundSql.getParameterMappings()) {
-            String rmId = pm.getResultMapId();
+            String rmId = pm.getResultMapId();//获取返回对象，插入无返回对象
             if (rmId != null) {
                 ResultMap rm = configuration.getResultMap(rmId);
                 if (rm != null) {

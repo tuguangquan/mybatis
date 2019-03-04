@@ -96,7 +96,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     private void parseConfiguration(XNode root) {
         try {
             propertiesElement(root.evalNode("properties")); //issue #117 read properties first
-            typeAliasesElement(root.evalNode("typeAliases"));
+            typeAliasesElement(root.evalNode("typeAliases"));//别名类名注册
             pluginElement(root.evalNode("plugins"));
             objectFactoryElement(root.evalNode("objectFactory"));
             objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
@@ -312,11 +312,13 @@ public class XMLConfigBuilder extends BaseBuilder {
                     String mapperPackage = child.getStringAttribute("name");
                     configuration.addMappers(mapperPackage);
                 } else {
+                    //取到mybatis 配置文件mapper标签resource属性（找到对应的mapper.xml文件）
                     String resource = child.getStringAttribute("resource");
                     String url = child.getStringAttribute("url");
                     String mapperClass = child.getStringAttribute("class");
                     if (resource != null && url == null && mapperClass == null) {
                         ErrorContext.instance().resource(resource);
+                        //解析读取到的mapper.xml
                         InputStream inputStream = Resources.getResourceAsStream(resource);
                         XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
                         mapperParser.parse();

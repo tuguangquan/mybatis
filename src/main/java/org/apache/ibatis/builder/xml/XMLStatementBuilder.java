@@ -51,7 +51,7 @@ public class XMLStatementBuilder extends BaseBuilder {
         this.context = context;
         this.requiredDatabaseId = databaseId;
     }
-
+    //解析select update等标签
     public void parseStatementNode() {
         String id = context.getStringAttribute("id");
         String databaseId = context.getStringAttribute("databaseId");
@@ -88,7 +88,7 @@ public class XMLStatementBuilder extends BaseBuilder {
         processSelectKeyNodes(id, parameterTypeClass, langDriver);
 
         // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
-        SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
+        SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);//创建sql 占位符替换为jdbc 问号占位符
         String resultSets = context.getStringAttribute("resultSets");
         String keyProperty = context.getStringAttribute("keyProperty");
         String keyColumn = context.getStringAttribute("keyColumn");

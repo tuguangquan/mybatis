@@ -227,12 +227,12 @@ public class MapperMethod {
             this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
             this.params = Collections.unmodifiableSortedMap(getParams(method, this.hasNamedParameters));
         }
-
+//对象转换为参数
         public Object convertArgsToSqlCommandParam(Object[] args) {
             final int paramCount = params.size();
             if (args == null || paramCount == 0) {
                 return null;
-            } else if (!hasNamedParameters && paramCount == 1) {
+            } else if (!hasNamedParameters && paramCount == 1) {//支持1个入参，多于1个用下面的hashmap
                 return args[params.keySet().iterator().next()];
             } else {
                 final Map<String, Object> param = new ParamMap<Object>();

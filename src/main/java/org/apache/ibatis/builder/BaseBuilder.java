@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.builder;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.ibatis.mapping.ParameterMode;
 import org.apache.ibatis.mapping.ResultSetType;
 import org.apache.ibatis.session.Configuration;
@@ -26,6 +22,10 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeAliasRegistry;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Clinton Begin
@@ -94,7 +94,7 @@ public abstract class BaseBuilder {
             throw new BuilderException("Error creating instance. Cause: " + e, e);
         }
     }
-
+    //翻译java bean的别名到类名
     protected Class<?> resolveClass(String alias) {
         if (alias == null) return null;
         try {

@@ -15,16 +15,13 @@
  */
 package org.apache.ibatis.parsing;
 
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Clinton Begin
@@ -371,7 +368,7 @@ public class XNode {
         }
         return data;
     }
-
+    //${}占位符替换
     private String getBodyData(Node child) {
         if (child.getNodeType() == Node.CDATA_SECTION_NODE
                 || child.getNodeType() == Node.TEXT_NODE) {

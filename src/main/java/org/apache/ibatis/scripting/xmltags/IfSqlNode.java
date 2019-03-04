@@ -30,7 +30,7 @@ public class IfSqlNode implements SqlNode {
     }
 
     public boolean apply(DynamicContext context) {
-        if (evaluator.evaluateBoolean(test, context.getBindings())) {
+        if (evaluator.evaluateBoolean(test, context.getBindings())) {//if表达式如果为true则拼接sql，否则跳过
             contents.apply(context);
             return true;
         }

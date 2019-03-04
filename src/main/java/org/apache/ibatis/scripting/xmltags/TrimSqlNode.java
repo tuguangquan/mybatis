@@ -15,14 +15,9 @@
  */
 package org.apache.ibatis.scripting.xmltags;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import org.apache.ibatis.session.Configuration;
+
+import java.util.*;
 
 /**
  * @author Clinton Begin
@@ -86,7 +81,7 @@ public class TrimSqlNode implements SqlNode {
             this.sqlBuffer = new StringBuilder();
         }
 
-        public void applyAll() {
+        public void applyAll() {//实现了trim标签的功能
             sqlBuffer = new StringBuilder(sqlBuffer.toString().trim());
             String trimmedUppercaseSql = sqlBuffer.toString().toUpperCase(Locale.ENGLISH);
             if (trimmedUppercaseSql.length() > 0) {

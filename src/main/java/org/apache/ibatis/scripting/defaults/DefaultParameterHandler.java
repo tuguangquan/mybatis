@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.scripting.defaults;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -30,6 +26,10 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Clinton Begin
@@ -55,7 +55,7 @@ public class DefaultParameterHandler implements ParameterHandler {
     public Object getParameterObject() {
         return parameterObject;
     }
-
+    //设置sql 占位符
     public void setParameters(PreparedStatement ps) throws SQLException {
         ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();

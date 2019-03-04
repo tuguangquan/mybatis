@@ -16,6 +16,9 @@
 package org.apache.ibatis.scripting.xmltags;
 
 /**
+ * 该方法的含义为，将sql的处理结果，append到DynamicContext context对象中，
+ * DynamicContext可以理解为StringBuilder对象的功能，它的作用就是计算sql片段并append到一起，形成最终的sql。
+ * 对该方法的理解非常重要，只有理解了这个方法，才能真正明白一个完整sql是如何组装出来的。
  * @author Clinton Begin
  */
 public interface SqlNode {

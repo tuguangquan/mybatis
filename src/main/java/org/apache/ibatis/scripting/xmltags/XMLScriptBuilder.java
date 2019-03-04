@@ -48,12 +48,12 @@ public class XMLScriptBuilder extends BaseBuilder {
         this.context = context;
         this.parameterType = parameterType;
     }
-
+//解析sql标签，解析成为一个SqlNode集合，可能是嵌套的SqlNode，表示了整个sql节点
     public SqlSource parseScriptNode() {
         List<SqlNode> contents = parseDynamicTags(context);
-        MixedSqlNode rootSqlNode = new MixedSqlNode(contents);
+        MixedSqlNode rootSqlNode = new MixedSqlNode(contents);//SqlNode的集合一般有多个sqlnode，是一个MixedSqlNode
         SqlSource sqlSource = null;
-        if (isDynamic) {
+        if (isDynamic) { //只要包含一个${}该sql就是一个DynamicSqlSource
             sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
         } else {
             sqlSource = new RawSqlSource(configuration, rootSqlNode, parameterType);
@@ -66,7 +66,7 @@ public class XMLScriptBuilder extends BaseBuilder {
         NodeList children = node.getNode().getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             XNode child = node.newXNode(children.item(i));
-            if (child.getNode().getNodeType() == Node.CDATA_SECTION_NODE || child.getNode().getNodeType() == Node.TEXT_NODE) {
+            if (child.getNode().getNodeType() == Node.CDATA_SECTION_NODE || child.getNode().getNodeType() == Node.TEXT_NODE) {//xml为CDATA节点或文本节点
                 String data = child.getStringBody("");
                 TextSqlNode textSqlNode = new TextSqlNode(data);
                 if (textSqlNode.isDynamic()) {
@@ -75,8 +75,8 @@ public class XMLScriptBuilder extends BaseBuilder {
                 } else {
                     contents.add(new StaticTextSqlNode(data));
                 }
-            } else if (child.getNode().getNodeType() == Node.ELEMENT_NODE) { // issue #628
-                String nodeName = child.getNode().getNodeName();
+            } else if (child.getNode().getNodeType() == Node.ELEMENT_NODE) { // issue #628//xml是element标签
+                String nodeName = child.getNode().getNodeName();//获取子标签名字，如if trim foreach等
                 NodeHandler handler = nodeHandlers.get(nodeName);
                 if (handler == null) {
                     throw new BuilderException("Unknown element <" + nodeName + "> in SQL statement.");
@@ -119,7 +119,7 @@ public class XMLScriptBuilder extends BaseBuilder {
 
     private class TrimHandler implements NodeHandler {
         public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
-            List<SqlNode> contents = parseDynamicTags(nodeToHandle);
+            List<SqlNode> contents = parseDynamicTags(nodeToHandle);//递归解析trim标签
             MixedSqlNode mixedSqlNode = new MixedSqlNode(contents);
             String prefix = nodeToHandle.getStringAttribute("prefix");
             String prefixOverrides = nodeToHandle.getStringAttribute("prefixOverrides");

@@ -15,14 +15,14 @@
  */
 package org.apache.ibatis.mapping;
 
-import java.sql.ResultSet;
-
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
-/**
+import java.sql.ResultSet;
+
+/** 存储了参数映射关系包括类型 handler等
  * @author Clinton Begin
  */
 public class ParameterMapping {

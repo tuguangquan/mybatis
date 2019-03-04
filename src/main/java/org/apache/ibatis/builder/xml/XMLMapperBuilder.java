@@ -87,6 +87,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         return sqlFragments.get(refid);
     }
 
+    //解析mapper.xml文件
     private void configurationElement(XNode context) {
         try {
             String namespace = context.getStringAttribute("namespace");
@@ -234,7 +235,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     private ResultMap resultMapElement(XNode resultMapNode) throws Exception {
         return resultMapElement(resultMapNode, Collections.<ResultMapping>emptyList());
     }
-
+    //mapper.xml 解析映射
     private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings) throws Exception {
         ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
         String id = resultMapNode.getStringAttribute("id",
@@ -250,7 +251,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         List<ResultMapping> resultMappings = new ArrayList<ResultMapping>();
         resultMappings.addAll(additionalResultMappings);
         List<XNode> resultChildren = resultMapNode.getChildren();
-        for (XNode resultChild : resultChildren) {
+        for (XNode resultChild : resultChildren) {//解析resultMap的子标签
             if ("constructor".equals(resultChild.getName())) {
                 processConstructorElement(resultChild, typeClass, resultMappings);
             } else if ("discriminator".equals(resultChild.getName())) {
@@ -337,7 +338,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         }
         return true;
     }
-
+    //构造一个resultmap 子标签对象
     private ResultMapping buildResultMappingFromContext(XNode context, Class<?> resultType, ArrayList<ResultFlag> flags) throws Exception {
         String property = context.getStringAttribute("property");
         String column = context.getStringAttribute("column");

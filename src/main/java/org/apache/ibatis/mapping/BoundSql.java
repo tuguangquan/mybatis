@@ -15,12 +15,12 @@
  */
 package org.apache.ibatis.mapping;
 
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.session.Configuration;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.session.Configuration;
 
 /**
  * An actual SQL String got form an {@link SqlSource} after having processed any dynamic content.
@@ -31,13 +31,13 @@ import org.apache.ibatis.session.Configuration;
  * Can also have additional parameters that are created by the dynamic language (for loops, bind...).
  */
 
-/**
+/** 维护了数据库sql语句（?占位符）和对应的参数列表（list）
  * @author Clinton Begin
  */
 public class BoundSql {
 
     private String sql;
-    private List<ParameterMapping> parameterMappings;
+    private List<ParameterMapping> parameterMappings;//BoundSql不仅保存了最终的可执行的sql，还保存了sql中？号占位符的参数列表。
     private Object parameterObject;
     private Map<String, Object> additionalParameters;
     private MetaObject metaParameters;

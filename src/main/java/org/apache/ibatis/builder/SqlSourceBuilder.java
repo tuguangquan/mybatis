@@ -15,10 +15,6 @@
  */
 package org.apache.ibatis.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.parsing.GenericTokenParser;
@@ -28,7 +24,11 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 
-/**
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**解析带井号的sql入参，构建ParameterMapping
  * @author Clinton Begin
  */
 public class SqlSourceBuilder extends BaseBuilder {
@@ -45,7 +45,7 @@ public class SqlSourceBuilder extends BaseBuilder {
         String sql = parser.parse(originalSql);
         return new StaticSqlSource(configuration, sql, handler.getParameterMappings());
     }
-
+    //该handler 先将 #{}替换为数据库占位符问号，并解析参数类型
     private static class ParameterMappingTokenHandler extends BaseBuilder implements TokenHandler {
 
         private List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
@@ -61,16 +61,16 @@ public class SqlSourceBuilder extends BaseBuilder {
         public List<ParameterMapping> getParameterMappings() {
             return parameterMappings;
         }
-
+        //对于#{}的参数是在这里被解析，并添加到参数列表里parameterMappings
         public String handleToken(String content) {
             parameterMappings.add(buildParameterMapping(content));
-            return "?";
+            return "?";//将其替换为?
         }
 
         private ParameterMapping buildParameterMapping(String content) {
             Map<String, String> propertiesMap = parseParameterMapping(content);
             String property = propertiesMap.get("property");
-            Class<?> propertyType;
+            Class<?> propertyType;//得到参数对应的java类型，如name反射得到student的name类型为string，日期则为Date类型
             if (metaParameters.hasGetter(property)) { // issue #448 get type from additional params
                 propertyType = metaParameters.getGetterType(property);
             } else if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
@@ -78,7 +78,7 @@ public class SqlSourceBuilder extends BaseBuilder {
             } else if (JdbcType.CURSOR.name().equals(propertiesMap.get("jdbcType"))) {
                 propertyType = java.sql.ResultSet.class;
             } else if (property != null) {
-                MetaClass metaClass = MetaClass.forClass(parameterType);
+                MetaClass metaClass = MetaClass.forClass(parameterType);//反射一个参数列表
                 if (metaClass.hasGetter(property)) {
                     propertyType = metaClass.getGetterType(property);
                 } else {
