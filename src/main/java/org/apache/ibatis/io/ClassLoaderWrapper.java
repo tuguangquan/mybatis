@@ -20,6 +20,7 @@ import java.net.URL;
 
 /**
  * A class to wrap access to multiple class loaders making them work as one
+ * 一个包装访问多个类加载器的类，使它们作为一个整合
  *封装了5个类加载器,见getClassLoaders方法
  *
  * @author Clinton Begin
@@ -39,7 +40,7 @@ public class ClassLoaderWrapper {
   }
   
   /*
-   * Get a resource as a URL using the current class path
+   * 使用当前类路径获取资源作为URL
    *
    * @param resource - the resource to locate
    * @return the resource or null
@@ -49,7 +50,7 @@ public class ClassLoaderWrapper {
   }
 
   /*
-   * Get a resource from the classpath, starting with a specific class loader
+   * 从类路径获取资源，从特定的类加载器开始
    *
    * @param resource    - the resource to find
    * @param classLoader - the first classloader to try
