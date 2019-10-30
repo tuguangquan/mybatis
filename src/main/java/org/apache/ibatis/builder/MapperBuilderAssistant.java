@@ -341,6 +341,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       String parameterMap,
       Class<?> parameterTypeClass,
       MappedStatement.Builder statementBuilder) {
+    // 给parameterMap加上namespace 但是因为parameterMap被弃用 所以一般返回null
     parameterMap = applyCurrentNamespace(parameterMap, true);
 
     if (parameterMap != null) {
@@ -350,12 +351,16 @@ public class MapperBuilderAssistant extends BaseBuilder {
         throw new IncompleteElementException("Could not find parameter map " + parameterMap, e);
       }
     } else if (parameterTypeClass != null) {
+      // 解析 parameterType生成的类对象
       List<ParameterMapping> parameterMappings = new ArrayList<ParameterMapping>();
+      // 构造ParameterMap类内部的构建类
+      // 这里主要是 parameterTypeClass 的赋值 而parameterMapping仅作为一个空列表传入
       ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(
           configuration,
           statementBuilder.id() + "-Inline",
           parameterTypeClass,
           parameterMappings);
+      // 通过内部构建类构建ParameterMap并传入配置对象中
       statementBuilder.parameterMap(inlineParameterMapBuilder.build());
     }
   }
