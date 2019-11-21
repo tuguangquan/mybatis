@@ -1,5 +1,8 @@
 ﻿mybatis源码中文注释版
 
+阅读准备参考：https://www.jianshu.com/p/e739afb8fe31
+需要导入模块：需要将mybatis-parent模块导入。mybatis-parent模块链接 https://github.com/mybatis/parent
+
 1.兵马未动，日志先行
 org.apache.ibatis.logging
 org.apache.ibatis.logging.commons
