@@ -142,6 +142,7 @@ public class Configuration {
    */
   protected Class<?> configurationFactory;
 
+  //拦截器执行链，pagehelper插件就是通过自定义拦截器实现分页
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   //类型处理器注册机
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
