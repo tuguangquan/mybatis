@@ -126,7 +126,7 @@ public class Configuration {
   //对象工厂和对象包装器工厂
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
-  //映射注册机
+  //映射注册器
   protected MapperRegistry mapperRegistry = new MapperRegistry(this);
 
   //默认禁用延迟加载
