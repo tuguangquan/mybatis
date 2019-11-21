@@ -33,7 +33,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 /**
  * 构建器的基类，建造者模式
- *
+ * 也有模板模式
  */
 public abstract class BaseBuilder {
   //需要配置，类型别名注册，类型处理器注册3个东西

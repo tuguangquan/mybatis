@@ -47,7 +47,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 /**
  * 执行器基类
- * 
+ * 模板模式
  */
 public abstract class BaseExecutor implements Executor {
 

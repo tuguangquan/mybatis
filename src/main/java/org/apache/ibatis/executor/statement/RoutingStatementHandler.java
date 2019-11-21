@@ -33,7 +33,8 @@ import org.apache.ibatis.session.RowBounds;
  */
 /**
  * 路由选择语句处理器,有点像代理模式
- * 
+ * 大方向是委托模式
+ * 细节是策略模式，根据不同类型，选择不同处理策略
  */
 public class RoutingStatementHandler implements StatementHandler {
 

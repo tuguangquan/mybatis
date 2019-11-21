@@ -38,7 +38,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 /**
  * 语句处理器的基类
- * 
+ * 模板模式
  */
 public abstract class BaseStatementHandler implements StatementHandler {
 

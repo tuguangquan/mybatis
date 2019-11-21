@@ -126,7 +126,7 @@ public class Configuration {
   //对象工厂和对象包装器工厂
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
-  //映射注册机
+  //映射注册器
   protected MapperRegistry mapperRegistry = new MapperRegistry(this);
 
   //默认禁用延迟加载
@@ -142,6 +142,7 @@ public class Configuration {
    */
   protected Class<?> configurationFactory;
 
+  //拦截器执行链，pagehelper插件就是通过自定义拦截器实现分页
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   //类型处理器注册机
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry();
