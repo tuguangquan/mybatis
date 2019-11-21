@@ -123,7 +123,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     includeParser.applyIncludes(context.getNode());
 
     // Parse selectKey after includes and remove them.
-    //解析之前先解析<selectKey>
+    //解析之前先解析<selectKey> selectKey主要涉及需要某些特殊关系来设置主键的值
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
     
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
@@ -145,7 +145,7 @@ public class XMLStatementBuilder extends BaseBuilder {
           ? new Jdbc3KeyGenerator() : new NoKeyGenerator();
     }
 
-	//又去调助手类
+	//调用助手类去真正创建MappedStatement然后加入配置Configuration中
     builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
         fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
         resultSetTypeEnum, flushCache, useCache, resultOrdered, 

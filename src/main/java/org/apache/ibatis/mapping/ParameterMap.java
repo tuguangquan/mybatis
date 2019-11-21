@@ -35,6 +35,7 @@ public class ParameterMap {
   public static class Builder {
     private ParameterMap parameterMap = new ParameterMap();
 
+    // 在构建者内部再持有ParameterMap对象并执行一系列赋值构建操作
     public Builder(Configuration configuration, String id, Class<?> type, List<ParameterMapping> parameterMappings) {
       parameterMap.id = id;
       parameterMap.type = type;
