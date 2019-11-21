@@ -28,7 +28,7 @@ import org.apache.ibatis.session.Configuration;
  */
 /**
  * 类型处理器的基类
- * 
+ * 模板模式
  */
 public abstract class BaseTypeHandler<T> extends TypeReference<T> implements TypeHandler<T> {
 
