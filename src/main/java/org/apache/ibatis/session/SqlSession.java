@@ -86,6 +86,7 @@ public interface SqlSession extends Closeable {
    * 这一点。
    *
    * 一般情况下公司都会编写自己的Mybatis 物理分页插件
+   * 可以使用第三方开源分页插件 比如 pagehelper 使用的是Mybatis的拦截器实现
    * @param <E> the returned list element type
    * @param statement Unique identifier matching the statement to use.
    * @param parameter A parameter object to pass to the statement.

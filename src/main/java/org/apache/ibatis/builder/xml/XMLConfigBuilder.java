@@ -428,7 +428,16 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**在构建Configuration对象时添加了 type="JDBC" 对应的事务工厂
+   * public Configuration() {
+   *     //注册更多的类型别名，至于为何不直接在TypeAliasRegistry里注册，还需进一步研究
+   *     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
+   * @param context
+   * @return
+   * @throws Exception
+   */
   //7.1事务管理器
+
 //<transactionManager type="JDBC">
 //  <property name="..." value="..."/>
 //</transactionManager>
