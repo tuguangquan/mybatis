@@ -33,12 +33,15 @@ import org.apache.ibatis.session.Configuration;
  */
 /**
  * 映射的语句
- *
+ * 对应一个mapper中的insert update delete select 标签的完整内容
  */
 public final class MappedStatement {
 
   private String resource;
   private Configuration configuration;
+  /**
+   * insert update delete select 标签中设置的 id
+   */
   private String id;
   private Integer fetchSize;
   private Integer timeout;
