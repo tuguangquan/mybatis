@@ -96,5 +96,6 @@ org.apache.ibatis.executor.statement
 
 18.插件
 org.apache.ibatis.plugin
+19.测试
 
 
