@@ -35,7 +35,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
- * @author Maozi Lao
+ * @author Jeff Butler
  */
 public class BatchExecutor extends BaseExecutor {
 
