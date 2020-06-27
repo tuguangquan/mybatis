@@ -229,7 +229,7 @@ public class SqlRunner {
       List<String> columns = new ArrayList<String>();
       List<TypeHandler<?>> typeHandlers = new ArrayList<TypeHandler<?>>();
       ResultSetMetaData rsmd = rs.getMetaData();
-      //先计算要哪些列，已经列的类型（TypeHandler）
+      //先计算要哪些列，以及列的类型（TypeHandler）
       for (int i = 0, n = rsmd.getColumnCount(); i < n; i++) {
         columns.add(rsmd.getColumnLabel(i + 1));
         try {
