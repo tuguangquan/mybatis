@@ -3,6 +3,21 @@
 阅读准备参考：https://www.jianshu.com/p/e739afb8fe31
 需要导入模块：需要将mybatis-parent模块导入。mybatis-parent模块链接 https://github.com/mybatis/parent
 
+------------------
+gaomz
+补充Mybatis主要类及之间的关系（包含类的功能的注释）
+/Users/network/GithubProject/mybatis注释/Mybatis主要类及之间的关系.puml
+补充selectOne()方法的调用时序图（查询是流程最复杂的，捋清楚查询流程，插入等操作自然就会了）
+select调用的时序图.puml
+
+学习建议：
+1.在看源码之前一定要掌握框架可以实现的功能
+(强烈推荐看官方文档:https://mybatis.org/mybatis-3/zh/getting-started.html),如果不是为了跳槽面试&不是真正热爱的话，吃透官方文档即可）
+2.对照着官方文档的流程，在源码中一步一步跟着文档调试
+3.看源码的过程中要了解每个包具体的作用
+------------------
+
+
 1.兵马未动，日志先行
 org.apache.ibatis.logging
 org.apache.ibatis.logging.commons
