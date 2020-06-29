@@ -17,4 +17,6 @@
 /**
  * Base package for caching stuff
  */
+//缓存基类、异常、缓存中的key对象。
+// 缓存框架按照 Key-Value方式存储，Key的生成采取规则为：[hashcode:checksum:mappedStementId:offset:limit:executeSql:queryParams]。
 package org.apache.ibatis.cache;

@@ -29,11 +29,17 @@ public class ErrorContext {
   private static final ThreadLocal<ErrorContext> LOCAL = new ThreadLocal<ErrorContext>();
 
   private ErrorContext stored;
+  //异常存在于哪个资源文件中
   private String resource;
+  //存储异常是做什么操作时发生的
   private String activity;
+  //存储哪个对象操作时发生异常。
   private String object;
+  //存储异常的概览信息。
   private String message;
+  //存储发生异常的 SQL 语句。
   private String sql;
+  //存储详细的 Java 异常日志。
   private Throwable cause;
  
   //单例模式

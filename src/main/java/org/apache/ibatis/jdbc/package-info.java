@@ -17,4 +17,5 @@
 /**
  * TODO fillme.
  */
+//与Sql相关的操作。如Sql运行器，脚本运行器和Sql封装类等
 package org.apache.ibatis.jdbc;

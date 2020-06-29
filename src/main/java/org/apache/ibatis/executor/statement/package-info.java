@@ -17,4 +17,5 @@
 /**
  * Statement handlers.
  */
+//StatementHandler是执行器内部调用，真正来创建、管理jdbc中statement的类
 package org.apache.ibatis.executor.statement;

@@ -17,4 +17,5 @@
 /**
  * Parses XML files to create a Configuration
  */
+//xml配置文件相关建造者类(根据配置文件获取配置信息存储到Configuration对象中)及相关异常
 package org.apache.ibatis.builder.xml;

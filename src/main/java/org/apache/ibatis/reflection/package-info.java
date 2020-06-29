@@ -17,4 +17,5 @@
 /**
  * Reflection utils.
  */
+//主要是一些反射操作的工具方法和对象工厂类，以及一些常用的包装类
 package org.apache.ibatis.reflection;

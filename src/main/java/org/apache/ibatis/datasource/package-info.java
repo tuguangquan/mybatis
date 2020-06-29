@@ -17,4 +17,5 @@
 /**
  * Base package for Datasources
  */
+//数据源工厂及异常。（工厂在xmlConfigBuilder中被调用）
 package org.apache.ibatis.datasource;

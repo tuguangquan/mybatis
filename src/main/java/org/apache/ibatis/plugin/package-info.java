@@ -17,4 +17,5 @@
 /**
  * Base package for handing plugins.
  */
+//包含插件的定义接口。插件主要是拦截器的实现，顺便一提pageHelper插件，即是插件接口的实现
 package org.apache.ibatis.plugin;

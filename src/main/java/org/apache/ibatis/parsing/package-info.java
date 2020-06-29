@@ -17,4 +17,6 @@
 /**
  * Parsing utils
  */
+//变量解析.如解析${},#{}等
+
 package org.apache.ibatis.parsing;

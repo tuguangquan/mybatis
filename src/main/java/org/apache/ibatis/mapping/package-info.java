@@ -17,4 +17,5 @@
 /**
  * TODO fillme.
  */
+//比较杂，主要是一些mapper.xml配置文件的解析工具及标签解析后对应的实体
 package org.apache.ibatis.mapping;

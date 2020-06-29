@@ -17,4 +17,5 @@
 /**
  * JNDI Datasource factory
  */
+//JNDI数据源工厂
 package org.apache.ibatis.datasource.jndi;

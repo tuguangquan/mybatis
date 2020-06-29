@@ -17,4 +17,5 @@
 /**
  * Contains the result handlers.
  */
+//结果处理器。功能与拦截器后置处理类似。只是效率会更高一些。
 package org.apache.ibatis.executor.result;

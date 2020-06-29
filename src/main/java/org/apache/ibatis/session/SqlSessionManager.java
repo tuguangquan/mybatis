@@ -35,6 +35,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  * SqlSession管理员,可参考SqlSessionManagerTest
  *
  */
+//作用是复用session，session池，同一线程每次都获取同一session，而不需要像sessionfactory那样每次都创建新的，使用threadlocal实现。
 public class SqlSessionManager implements SqlSessionFactory, SqlSession {
 
   private final SqlSessionFactory sqlSessionFactory;

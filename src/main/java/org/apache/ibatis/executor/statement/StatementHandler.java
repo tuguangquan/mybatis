@@ -31,13 +31,14 @@ import org.apache.ibatis.session.ResultHandler;
  * 语句处理器
  * 
  */
+//创建、管理JDBC中的statement对象
 public interface StatementHandler {
 
   //准备语句
   Statement prepare(Connection connection)
       throws SQLException;
 
-  //参数化
+  //参数化  用于初始化 Statement 对象以及对sql的占位符进行赋值
   void parameterize(Statement statement)
       throws SQLException;
 

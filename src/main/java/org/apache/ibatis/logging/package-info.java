@@ -17,4 +17,5 @@
 /**
  * TODO fillme.
  */
+//各个类型的日志适配器，都实现了Log接口。
 package org.apache.ibatis.logging;

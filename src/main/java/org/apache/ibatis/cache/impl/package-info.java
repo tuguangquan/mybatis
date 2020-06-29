@@ -17,4 +17,5 @@
 /**
  * Contains the default cache implementation
  */
+//直接实现了Cache接口
 package org.apache.ibatis.cache.impl;

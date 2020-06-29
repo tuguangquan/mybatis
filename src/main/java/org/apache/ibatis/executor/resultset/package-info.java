@@ -17,4 +17,5 @@
 /**
  * Contains the result processing logic
  */
+//将jdbc的resultset映射为mybatis中的resultMap
 package org.apache.ibatis.executor.resultset;

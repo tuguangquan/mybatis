@@ -17,4 +17,5 @@
 /**
  * Contains the key generators
  */
+//主键生成器
 package org.apache.ibatis.executor.keygen;
