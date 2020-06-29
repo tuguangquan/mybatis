@@ -1,0 +1,37 @@
+@startuml
+
+participant main
+participant SqlSessionFactoryBuilder
+participant SqlSessionFactory
+participant DefaultSqlSession
+
+
+main->SqlSessionFactoryBuilder:1.builder()
+SqlSessionFactoryBuilder-->main:SqlSessionFactory对象
+main->SqlSessionFactory:2.openSession()
+SqlSessionFactory-->main:SqlSession对象
+main->DefaultSqlSession:3.selectOne()
+DefaultSqlSession->DefaultSqlSession:selectList()
+DefaultSqlSession->Configuration:getMappedStatement(statement)
+Configuration-->DefaultSqlSession:MappedStatement对象
+
+DefaultSqlSession->Executor:query(mappedStatement,parameter,rowBounds,Executor.NO_RESULT_HANDLER)
+Executor->MappedStatement:getBoundSql()
+MappedStatement-->Executor:BoundSql对象
+Executor->Executor:createCacheKey()
+Executor->Executor:query()
+Executor->Executor:queryFromDatabase()
+
+
+
+
+Executor-->DefaultSqlSession:查询的数据
+DefaultSqlSession-->DefaultSqlSession:查询的数据
+DefaultSqlSession-->main:查询的数据
+
+SqlSessionFactory->DefaultSqlSession:openSession()
+DefaultSqlSession->DefaultSqlSession:selectOne()
+DefaultSqlSession->Configuration:selectList()
+Configuration->Executor:getMappedStatement()
+Executor->MappedStatement:getBoundSql()
+@enduml

@@ -17,5 +17,8 @@
 /**
  * Contains all the annotation that are used in mapper interfaces
  */
+//本包定义了Mybatis框架中的24个注解。
+//本包对Mybatis的其它包没有任何依赖，也不依赖于第三方的库。
+//本包只被builder.annotation包的MapperAnnotationBuilder类引用。
 package org.apache.ibatis.annotations;
 

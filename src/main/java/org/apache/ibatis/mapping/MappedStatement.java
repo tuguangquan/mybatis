@@ -35,6 +35,7 @@ import org.apache.ibatis.session.Configuration;
  * 映射的语句
  *
  */
+//实际上就是mapper.xml中的(select|insert|update|delete)四个标签的实例化对象
 public final class MappedStatement {
 
   private String resource;

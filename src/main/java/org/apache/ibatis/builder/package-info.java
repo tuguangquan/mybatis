@@ -17,4 +17,5 @@
 /**
  * Base package for the Configuration building code
  */
+//建造者基类及相关异常
 package org.apache.ibatis.builder;

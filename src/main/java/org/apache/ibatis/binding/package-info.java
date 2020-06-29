@@ -17,4 +17,5 @@
 /**
  * Bings mapper interfaces with mapped statements
  */
+//生成mapper.xml文件对应的实体的工具（反射相关）
 package org.apache.ibatis.binding;

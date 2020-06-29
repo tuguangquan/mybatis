@@ -17,4 +17,5 @@
 /**
  * Base package for exceptions.
  */
+//本包定义了Mybatis框架中的异常,只依赖于Mybatis的executor的ErrorContext。Mybatis的其它包大量引用了本包中的类和接口，即严重依赖于本包。
 package org.apache.ibatis.exceptions;

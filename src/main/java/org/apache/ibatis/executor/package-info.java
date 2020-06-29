@@ -17,4 +17,5 @@
 /**
  * Contains the statement executors.
  */
+//包含各种执行器，对数据库的增删改查都是通过session调用执行器来执行的
 package org.apache.ibatis.executor;

@@ -17,4 +17,5 @@
 /**
  * Parses annotions to create a Configuration
  */
+//注解相关建造者类(根据注解获取配置信息存储到Configuration对象中)及相关异常
 package org.apache.ibatis.builder.annotation;

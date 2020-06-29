@@ -17,4 +17,5 @@
 /**
  * JDBC transaction.
  */
+//简单的jdbc事务，在statementhandler创建statement时，就是在事务中获取的数据源及连接等信息。
 package org.apache.ibatis.transaction.jdbc;

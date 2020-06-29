@@ -182,7 +182,7 @@ public interface SqlSession extends Closeable {
    * Execute an insert statement with the given parameter object. Any generated
    * autoincrement values or selectKey entries will modify the given parameter
    * object properties. Only the number of rows affected will be returned.
-   * 插入记录，容许传入参数。
+   * 插入记录，允许传入参数。
    * @param statement Unique identifier matching the statement to execute.
    * @param parameter A parameter object to pass to the statement.
    * @return int The number of rows affected by the insert. 注意返回的是受影响的行数

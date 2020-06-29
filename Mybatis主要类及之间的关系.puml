@@ -1,0 +1,127 @@
+@startuml
+
+abstract class BaseBuilder{
+Configuration configuration;
+TypeAliasRegistry typeAliasRegistry;
+TypeHandlerRegistry typeHandlerRegistry;
+}
+note left of BaseBuilder:所有构造者的基类
+
+class SqlSessionFactoryBuilder{
+SqlSessionFactory build()
+}
+note right of SqlSessionFactoryBuilder:产生工厂，工厂需要一个\nConfiguration类通过\nXMLConfigBuilder获取。
+SqlSessionFactoryBuilder "build()"..> "parse()"XMLConfigBuilder
+
+class XMLConfigBuilder{
+Configuration configuration
+Configuration parse()
+}
+note right of XMLConfigBuilder:parse方法会解析xml文件\n的所有标签放到configuration\n对象中,在解析mappers时会根据\nurl或者resource获取对应的mapper\n文件然后调用XMLMapperBuilder类\n来解析。
+XMLConfigBuilder "parse()"..> "parse()"XMLMapperBuilder
+BaseBuilder <|-- XMLConfigBuilder
+
+class XMLMapperBuilder{
+void parse()
+}
+BaseBuilder <|-- XMLMapperBuilder
+XMLMapperBuilder --> Configuration
+
+
+class Configuration{
+MapperRegistry mapperRegistry
+}
+Configuration --> MapperRegistry
+
+note left of Configuration: Mybatis最重要的类，存放所有配置相关的信息\n，解析的xml文件的所有内容都存到这里，大部\n分内容在这个类里都是一个map的结构，key是\nmapper的命名空间+标签id，值是标签对应的对象。
+
+class MapperRegistry{
+Configuration configuration
+}
+MapperRegistry --> Configuration
+note left of MapperRegistry: XMLMapperBuilder类通过Configuration\n类将mapper映射文件对应的接口类型作为\nvalue存到该类的map中，key是命名空间。
+
+interface SqlSession{
+}
+
+class DefaultSqlSession{
+Configuration configuration;
+Executor executor;
+}
+SqlSession <|-- DefaultSqlSession
+DefaultSqlSession-->Configuration
+DefaultSqlSession-->Executor
+note right of DefaultSqlSession: 各种sql语句都是通过session中的Executor\n执行的，而Executor则是通过Transaction对\n象获取数据库连接，然后executor创建\nstatementhandler，由statementhandler\n创建管理statement与数据库交互。
+
+class JdbcTransaction{
+Connection connection;
+DataSource dataSource;
+TransactionIsolationLevel level;
+boolean autoCommmit;
+}
+
+class SimpleExcutor{
+Transaction transaction;
+Executor wrapper;
+}
+SimpleExcutor-> JdbcTransaction
+Executor<|--SimpleExcutor
+SimpleExcutor..>RoutingStatementHandler
+
+interface Executor{
+}
+class SqlSessionManager implements SqlSessionFactory,SqlSession{
+}
+note bottom of SqlSessionManager: SqlSessionFactory优化版\n，复用session，同一线程\n每次会获取同一session，\n通过threadlocal实现。
+
+interface ResultHandler{
+handleResult()
+}
+note right of ResultHandler: 对从库中查询的结果\n进行处理，功能与插件\n一样，但是效率会更高\n一些，用户自己写接口\n实现。
+
+interface TypeHandler{
+
+}
+note left of TypeHandler: JDBC的PreparedStatement类先是用占位符\n给sql，然后再调用.setString|setArrayList\n等方法。typeHandler有很多实现类，都是\n对应的某种类型处理器，作用是在set时根据\n要set的类型，调用不同的类型处理器,第二个\n作用是在取得查询结果，将结果映射为对应的\njava类型。
+class DefaultParameterHandler{
+
+}
+note left of DefaultParameterHandler: 在产生statement后，通过\nDefaultParameterHandler\n来给之前sql语句中的占位符\n进行替换，具体实现是在内部\n根据参数类型产生对应的\ntypeHandler，在对应的handler\n进行替换。
+DefaultParameterHandler--> TypeHandler
+
+class BaseStatementHandler{
+  Configuration configuration;
+  ObjectFactory objectFactory;
+  TypeHandlerRegistry typeHandlerRegistry;
+  ResultSetHandler resultSetHandler;
+  ParameterHandler parameterHandler;
+  Executor executor;
+  MappedStatement mappedStatement;
+  RowBounds rowBounds;
+  BoundSql boundSql;
+}
+note right of BaseStatementHandler:最最重要的接口之一，executor执行的查询和更新都是通过它的子类实现的
+
+class RoutingStatementHandler{
+  private final StatementHandler delegate;
+}
+RoutingStatementHandler->BaseStatementHandler
+note left of RoutingStatementHandler:这个接口是BaseStatementHandler的三个子类的路由，\n没有实际操作，只是负责三个StatementHandler的创\n建及调用。
+
+class ErrorContext{
+  private ErrorContext stored;
+  //存储异常存在于哪个资源文件中
+  private String resource;
+  //存储异常是做什么操作时发生的
+  private String activity;
+  //存储哪个对象操作时发生异常。
+  private String object;
+  //存储异常的概览信息。
+  private String message;
+  //存储发生异常的 SQL 语句。
+  private String sql;
+  //存储详细的 Java 异常日志。
+  private Throwable cause;
+}
+note top of ErrorContext:在线程执行过程中不断将执行环境信息\n存到该类中，当发生异常时mybatis会\n将该对象的toString()方法传给统一的\n持久层异常进行打印。
+@enduml

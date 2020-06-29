@@ -17,4 +17,5 @@
 /**
  * Contains cache decorators
  */
+//通过装饰器模式为缓存提供某种功能，形成一个装饰器链。
 package org.apache.ibatis.cache.decorators;

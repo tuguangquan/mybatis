@@ -17,4 +17,5 @@
 /**
  * Base package for handling parameters.
  */
+//参数处理器基类。参数处理器是对sql语句中的参数进行类型转换及对查询结果类型装换。ps：类型转换指java类型和数据库类型的映射
 package org.apache.ibatis.executor.parameter;
